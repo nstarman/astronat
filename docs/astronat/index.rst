@@ -13,6 +13,8 @@ Subpackages
    constants/index
    units/index
 
+   sc
+
 
 Reference/API
 =============

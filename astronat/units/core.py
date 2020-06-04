@@ -7,7 +7,6 @@ __author__ = "Nathaniel Starkman"
 
 __all__ = [
     "quantity_return_",
-    "ExpandedUnitType",
 ]
 
 
@@ -25,26 +24,23 @@ from typing import Union, Sequence, Any, TypeVar
 
 from astropy.units.core import *
 
-from astropy.units import Quantity
+import astropy.units as u
 from astropy.units.core import Unit, IrreducibleUnit
 from astropy.utils.decorators import format_doc
 
-# PROJECT-SPECIFIC
-
-from ..utils.typing import ExpandedUnitType
+from utilipy.utils.typing import UnitableType
 
 
 ##############################################################################
 # PARAMETERS
 
-_doc_base_params = """
-unit: :class:`~astropy.units.core.Unit`, optional
-    sets the unit for the returned `res`
-    if None, returns `res` unchanged, unless `to_value` is used
-    if '', decomposes
+_doc_base_params = """unit: :class:`~astropy.units.Unit`, optional
+    sets the unit for the returned value.
+    if None, returns value unchanged, unless `to_value` is used
+    if blank string, decomposes
 to_value: bool, optional
     whether to return ``.to_value(unit)``
-    see Astropy.units.Quantity.to_value
+    see ``astropy.units.Quantity.to_value``
 equivalencies: list, optional
     equivalencies for ``.to()`` and ``.to_value()``
     only used if `unit` to `to_value` are not None/False
@@ -58,7 +54,7 @@ decompose: bool or list, optional
 
     Decomposing then converting wastes time, since
     ``.to(unit, equivalencies)`` internally does conversions.
-    The only use for combining `decompose` with other `quantity_return_`
+    The only use for combining `decompose` with other ``quantity_return_``
     parameters is with
 
     .. code-block:: python
@@ -70,16 +66,14 @@ decompose: bool or list, optional
     .. note::
 
         **experimental feature:**
-        for things which are not (`~astropy.units.core.Unit`),
+        for things which are not (:class:`~astropy.units.Unit`),
         tries wrapping in ``Unit()``. This would normally return an error, but now
         allows for conversions such as:
 
         >>> x = 10 * u.km * u.s
         >>> bases = [u.Unit(2 * u.km), u.s]
         >>> x.decompose(bases=bases) # doctest: +SKIP
-        <Quantity 5.0 2 km s>
-
-"""
+        <Quantity 5.0 2 km s>"""
 
 _doc_base_raises = """
 :class:`~ValueError`
@@ -101,7 +95,7 @@ _doc_base_raises = """
 )
 def quantity_return_(
     res: Any,
-    unit: Union[None, ExpandedUnitType] = None,
+    unit: Union[None, UnitableType] = None,
     to_value: bool = False,
     equivalencies: list = [],
     decompose: Union[bool, Sequence] = False,
@@ -163,8 +157,6 @@ def quantity_return_(
             for x in decompose
         ]
         res = res.decompose(bases=bases)
-    else:
-        pass
 
     # --------------------
     # Returning
@@ -172,9 +164,13 @@ def quantity_return_(
     if (unit is None) and (to_value is False):  # nothing further required
         pass
     elif to_value is True:  # return value
+        unit = u.Unit(unit) if unit is not None else unit
         res = res.to_value(unit, equivalencies=equivalencies)
     else:  # return, with unit conversion
-        res = res.to(unit, equivalencies=equivalencies)
+        if equivalencies:  # has equivalencies, must use "to"
+            res = res.to(u.Unit(unit), equivalencies=equivalencies)
+        else:  # no equivalencies, can convert in-place
+            res <<= u.Unit(unit)
 
     return res
 

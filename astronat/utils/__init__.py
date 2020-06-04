@@ -6,8 +6,20 @@ __author__ = "Nathaniel Starkman"
 
 
 __all__ = [
+    "convert",
+    "data",
+    "modeling",
+    "table",
     "typing",
 ]
+
+__all_top_imports__ = (
+    "convert",
+    "data",
+    "modeling",
+    "table",
+    "typing",
+)  # TODO deprecate
 
 
 ##############################################################################
@@ -16,15 +28,7 @@ __all__ = [
 # PROJECT-SPECIFIC
 
 # import top level packages
-from . import typing
-
-
-##############################################################################
-# __ALL__
-
-__all_top_imports__ = ("typing",)
-
-__all__ += list(__all_top_imports__)
+from . import convert, data, modeling, table, typing
 
 
 ##############################################################################

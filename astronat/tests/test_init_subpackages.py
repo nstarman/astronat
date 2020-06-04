@@ -61,6 +61,8 @@ def test_init_constants():
 
 # /def
 
+# --------------------------------------------------------------------------
+
 
 def test_constants_top_level_imports():
     """Test top-level imports of :mod:`~utilipy.constants`."""
@@ -96,12 +98,13 @@ def test_init_units():
         # top-level
         "amuse",
         "composite",
+        "convert",
         "core",
         "decorators",
         "full_amuse",
         # core
         "quantity_return_",
-        "ExpandedUnitType",
+        "UnitableType",
         # decorators
         "quantity_output",
         "quantity_io",
@@ -134,9 +137,11 @@ def test_init_utils():
     """Test :mod:`~utilipy.utils` initialization."""
     # Expectations
     local = [
+        "convert",
+        "data",
+        "modeling",
+        "table",
         "typing",
-        # top-level imports
-        # "logging",
     ]
 
     # test __all__ conforms to module
@@ -151,6 +156,8 @@ def test_init_utils():
 
 
 # /def
+
+# --------------------------------------------------------------------------
 
 
 def test_utils_top_level_imports():

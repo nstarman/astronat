@@ -49,11 +49,26 @@ The same can be accomplished with the general `help` function.
 __author__ = "Nathaniel Starkman"
 
 __all__ = [
+    # modules
+    "constants",
+    "dynamics",
+    "units",
+    "utils",
+    # functions
     "help",
     "online_help",
     "reload_config",
 ]
 
+__all_top_imports__ = (
+    "constants",
+    "dynamics",
+    # "extern",
+    # "phot",
+    # "sc",
+    "units",
+    "utils",
+)
 
 ##############################################################################
 # IMPORTS
@@ -79,11 +94,12 @@ import astropy.config as config
 
 # import packages into top-level namespace
 from . import (  # noqa
+    utils,
     constants,
+    dynamics,
     # phot,
     # sc,
     units,
-    utils,
 )
 
 
@@ -173,21 +189,6 @@ def help(query: T.Optional[str] = None, online: bool = False):
 
 
 # /def
-
-
-#############################################################################
-# __ALL__
-
-__all_top_imports__ = (
-    "constants",
-    # "extern",
-    # "phot",
-    # "sc",
-    "units",
-    "utils",
-)
-
-__all__ += list(__all_top_imports__)
 
 
 #############################################################################

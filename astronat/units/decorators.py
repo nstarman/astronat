@@ -25,11 +25,6 @@ import textwrap
 import typing as T
 
 
-# CUSTOM
-
-from utilipy.utils import functools, inspect
-
-
 # THIRD-PARTY
 
 from astropy.units import dimensionless_unscaled
@@ -38,11 +33,13 @@ from astropy.units.core import Unit, add_enabled_equivalencies
 from astropy.utils.misc import isiterable
 from astropy.utils.decorators import format_doc
 
+from utilipy.utils import functools, inspect
+from utilipy.utils.typing import UnitableType
+
 
 # PROJECT-SPECIFIC
 
 from .core import quantity_return_, _doc_base_params, _doc_base_raises
-from .convert import from_amuse
 
 
 ###############################################################################
@@ -99,11 +96,10 @@ Examples
 # ----------------------------------------
 
 # QuantityInputOutput parameters, combine base and assumed_units
-_doc_qio_params = """
-function: function
-    the function to decorate
-    (default None)
+_doc_qio_params = """function: Callable
+    the function to decorate (default None)
 {parameters}
+
 assumed_units: dict
     dictionary of default units
     (default dict())
@@ -183,7 +179,7 @@ Other Parameters
 
 @format_doc(
     None,
-    parameters=textwrap.indent(_doc_base_params, " " * 4),
+    parameters=textwrap.indent(_doc_base_params, " " * 4)[4:],
     raises=textwrap.indent(_doc_base_raises, " " * 4),
     examples=textwrap.indent(_doc_quantity_output_examples, " " * 4),
     doc_quantity_output_wrapped=textwrap.indent(
@@ -193,18 +189,15 @@ Other Parameters
 def quantity_output(
     function: T.Callable = None,
     *,
-    unit: T.Type[Unit] = None,
+    unit: UnitableType = None,
     to_value: bool = False,
     equivalencies: T.Sequence = [],
     decompose: T.Union[bool, T.Sequence] = False,
 ):
     r"""Decorate functions for unit output.
 
-    T.Any wrapped function accepts the additional key-word arguments:
-        - `unit`
-        - `to_value`
-        - `equivalencies`
-        - `decompose`
+    Any wrapped function accepts the additional key-word arguments
+    `unit`, `to_value`, `equivalencies`, `decompose`
 
     Parameters
     ----------
@@ -212,9 +205,10 @@ def quantity_output(
 
     Returns
     -------
-    wrapper: T.Callable
+    wrapper: Callable
         wrapped function
-        with the unit operations performed by `quantity_return_`
+        with the unit operations performed by
+        :func:`~astronat.units.quantity_return_`
 
         The following is added to the docstring
 
@@ -320,13 +314,13 @@ class QuantityInputOutput:
     def as_decorator(
         cls,
         function: T.Callable = None,
-        unit=None,
+        unit: UnitableType = None,
         to_value: bool = False,
         equivalencies: T.Sequence = [],
         decompose: T.Union[bool, T.Sequence] = False,
-        assumed_units: dict = {},
+        assumed_units: T.Dict = {},
         assume_annotation_units: bool = False,
-        **decorator_kwargs: T.Any,
+        **decorator_kwargs,
     ):
         """Decorator for validating the units of arguments to functions.
 
@@ -378,13 +372,13 @@ class QuantityInputOutput:
     def __init__(
         self,
         function: T.Callable = None,
-        unit=None,
+        unit: UnitableType = None,
         to_value: bool = False,
         equivalencies: T.Sequence = [],
         decompose: T.Union[bool, T.Sequence] = False,
         assumed_units: dict = {},
         assume_annotation_units: bool = False,
-        **decorator_kwargs: T.Any,
+        **decorator_kwargs,
     ):
         """Decorator for validating the units of arguments to functions.
 
@@ -439,7 +433,7 @@ class QuantityInputOutput:
         @functools.wraps(wrapped_function)
         def wrapped(
             *func_args: T.Any,
-            unit: T.Type[Unit] = self.unit,
+            unit: UnitableType = self.unit,
             to_value: bool = self.to_value,
             equivalencies: T.Sequence = self.equivalencies,
             decompose: T.Union[bool, T.Sequence] = self.decompose,
@@ -521,8 +515,8 @@ class QuantityInputOutput:
                     arg *= dfunit
 
                 # +----------------------------------+
-                # Get target unit or physical type, either from decorator kwargs
-                #   or annotations
+                # Get target unit or physical type,
+                # from decorator kwargs or annotations
                 if param.name in self.decorator_kwargs:
                     targets = self.decorator_kwargs[param.name]
                 else:
@@ -596,7 +590,8 @@ class QuantityInputOutput:
         # /def
 
         # TODO dedent
-        wrapped.__doc__ = inspect.cleandoc(wrapped.__doc__ or "") + _funcdec
+        # wrapped.__doc__ = inspect.cleandoc(wrapped.__doc__ or "") + _funcdec
+        wrapped.__doc__ = wrapped_function.__doc__
 
         return wrapped
 
@@ -633,6 +628,8 @@ def from_amuse_decorator(
         includes the original function in a method `.__wrapped__`
 
     """
+    from .convert import from_amuse  # TODO, to prevent circular import
+
     if not all([isinstance(a, (int, str)) for a in arguments]):
         raise TypeError("elements of `arguments` must be int or str")
 

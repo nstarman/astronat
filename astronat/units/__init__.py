@@ -13,12 +13,12 @@ __all__ = [
     # top-level
     "amuse",
     "composite",
+    "convert",
     "core",
     "decorators",
     "full_amuse",
     # core
     "quantity_return_",
-    "ExpandedUnitType",
     # decorators
     "quantity_output",
     "quantity_io",
@@ -53,12 +53,13 @@ from .amuse import *
 from .composite import *
 
 # more stuff
-from .core import quantity_return_, ExpandedUnitType
+from .convert import from_amuse, hms_str_to_unit
+from .core import quantity_return_
 from .decorators import quantity_output, quantity_io
 from .decorators import QuantityInputOutput
 
 # Import modules into top-level directory
-from . import amuse, composite, core, decorators, full_amuse
+from . import amuse, composite, convert, core, decorators, full_amuse
 
 
 ##############################################################################

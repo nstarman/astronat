@@ -15,6 +15,14 @@ References [#]_.
 
 .. [#] Astropy Collaboration et al., 2018, AJ, 156, 123.
 
+
+Notes
+-----
+.. todo::
+
+    - use UnitSystem to choose how to represent the units, then values.
+    - worry about when do stuff like ``import imperial``.
+
 """
 
 __author__ = "Nathaniel Starkman"
@@ -50,17 +58,12 @@ from . import (
 )
 
 
-##############################################################################
+# -------------------------------------------------------------------
 # __ALL__
 
 __all_top_imports__ = ("values", "_frozen")
 
 __all__ += list(__all_top_imports__)
-# __all__ += (
-#     constants.__all__
-#     if hasattr(constants, "__all__")
-#     else list(dir(constants))
-# )
 
 
 #############################################################################
