@@ -1,12 +1,14 @@
 # -*- coding: utf-8 -*-
+# see LICENSE.rst
 
-"""Utilities."""
+"""Test :mod:`~utilipy.constants`."""
 
 __author__ = "Nathaniel Starkman"
 
 
 __all__ = [
-    "typing",
+    "test_frozen",
+    "test_values",
 ]
 
 
@@ -15,16 +17,7 @@ __all__ = [
 
 # PROJECT-SPECIFIC
 
-# import top level packages
-from . import typing
-
-
-##############################################################################
-# __ALL__
-
-__all_top_imports__ = ("typing",)
-
-__all__ += list(__all_top_imports__)
+from . import test_frozen, test_values
 
 
 ##############################################################################

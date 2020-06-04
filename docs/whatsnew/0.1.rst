@@ -1,0 +1,71 @@
+.. _whatsnew-0.1:
+
+******************************
+What's New in `astronat` v0.1?
+******************************
+
+Overview
+========
+
+Adopted the Astropy-affiliate template.
+
+In particular, this release includes:
+
+* :ref:`whatsnew-0.1-framework`
+* :ref:`whatsnew-0.1-config`
+* :ref:`whatsnew-0.1-constants`
+* :ref:`whatsnew-0.1-units`
+* :ref:`whatsnew-0.1-utils`
+
+.. _whatsnew-0.1-framework:  
+
+Framework
+=========
+
+Many of these do not have a lot of functions implemented, but the framework is in place as utilities are added.
+
+- `constants` for astropy-style constants with frozen values
+
+.. _whatsnew-0.1-config:
+
+Config
+======
+
+Configuration functions: `check_config`, `write_config`, `get_import_verbosity`, `set_import_verbosity`, `get_warnings_verbosity`, `set_warnings_verbosity`, `get_frozen_constants`, `set_frozen_constants`.
+
+All the configurations can be get / set during run-time.
+
+There is a `with` version of all the configurations, for running code with a temporarily changed configurations.
+
+.. _whatsnew-0.1-constants:
+
+Constants
+=========
+
+Astropy constants, with a frozen version for reproducibility.
+
+float versions of the constants accessible through values module this includes f*rozen version for reproducibility to access frozen version, set frozen-constants=True in `astronat` config.
+*
+- `FrozenConstants` for frozen constants
+- `ConstantsValues` for the values of constants.
+  
+.. _whatsnew-0.1-units:
+
+Units
+=====
+
+Astropy units, extended and with full AMUSE unit support.
+
+
+.. _whatsnew-0.1-utils:
+
+Utils
+=====
+
+General package utilities.
+
+
+astronat.utils.typing
+^^^^^^^^^^^^^^^^^^^^^
+
+- `ExtendedUnitType`: Units and Quantities

@@ -1,49 +1,83 @@
-astronomy concomitant tools. Astropy powered.
----------------------------------------------
+astronat
+=======
 
-.. image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
-    :target: http://www.astropy.org
-    :alt: Powered by Astropy Badge
+Astronomy concomitant tools. Astropy powered.
+
+``astronat`` is a Python package for non project-specific code. There are modules for making advanced decorators, interfacing with IPython environments, data utilities, making fitting libraries inter-operable, improving astropy units and quantity-enabled functions, and much more.
+
+.. container::
+
+   |astropy| |Build Status| |Coveralls| |License| |Code style: black|
+
+
+Documentation
+-------------
+
+|Documentation Status| 
+
+The documentation for ``astronat`` is hosted on `Read the docs <https://readthedocs.org/projects/astronat/badge/?version=latest>`_.
+
+
+Installation and Dependencies
+-----------------------------
+
+|PyPI|
+
+
+The easiest way to get *astronat* is to install with pip. To install with pip::
+
+    pip install astronat
+
+See the `installation instructions <https://readthedocs.org/projects/astronat/>`_ in the `documentation <https://readthedocs.org/projects/astronat/>`_ for more information.
+
+
+Attribution
+-----------
+
+|DOI|
+
+If you make use of this code, please consider citing the Zenodo DOI as a software citation::
+
+   @software{astronat:zenodo,
+     author       = {nstarman},
+     title        = {astronat},
+     publisher    = {Zenodo},
+     doi          = {10.5281/zenodo.3491011},
+     url          = {https://doi.org/10.5281/zenodo.3491011}
+   }
 
 
 License
 -------
 
-This project is Copyright (c) Nathaniel Starkmana and licensed under
-the terms of the BSD 3-Clause license. This package is based upon
-the `Astropy package template <https://github.com/astropy/package-template>`_
-which is licensed under the BSD 3-clause license. See the licenses folder for
-more information.
+|License|
+
+Copyright 2018- Nathaniel Starkman and contributors.
+
+``astronat`` is free software made available under the BSD-3 License. For details see the `LICENSE <https://github.com/nstarman/astronat/blob/master/LICENSE>`_ file.
 
 
-Contributing
-------------
 
-We love contributions! astronat is open source,
-built on open source, and we'd love to have you hang out in our community.
+.. |astropy| image:: http://img.shields.io/badge/powered%20by-AstroPy-orange.svg?style=flat
+   :target: http://www.astropy.org/
 
-**Imposter syndrome disclaimer**: We want your help. No, really.
+.. |Build Status| image:: https://travis-ci.org/nstarman/astronat.svg?branch=master
+   :target: https://travis-ci.org/nstarman/astronat
 
-There may be a little voice inside your head that is telling you that you're not
-ready to be an open source contributor; that your skills aren't nearly good
-enough to contribute. What could you possibly offer a project like this one?
+.. |Code style: black| image:: https://img.shields.io/badge/code%20style-black-000000.svg
+   :target: https://github.com/psf/black
 
-We assure you - the little voice in your head is wrong. If you can write code at
-all, you can contribute code to open source. Contributing to open source
-projects is a fantastic way to advance one's coding skills. Writing perfect code
-isn't the measure of a good developer (that would disqualify all of us!); it's
-trying to create something, making mistakes, and learning from those
-mistakes. That's how we all improve, and we are happy to help others learn.
+.. |Documentation Status| image:: https://readthedocs.org/projects/astronat/badge/?version=latest
+   :target: https://astronat.readthedocs.io/en/latest/?badge=latest
 
-Being an open source contributor doesn't just mean writing code, either. You can
-help out by writing documentation, tests, or even giving feedback about the
-project (and yes - that includes giving feedback about the contribution
-process). Some of these contributions may be the most valuable to the project as
-a whole, because you're coming to the project with fresh eyes, so you can see
-the errors and assumptions that seasoned contributors have glossed over.
+.. |DOI| image:: https://zenodo.org/badge/192425953.svg
+   :target: https://zenodo.org/badge/latestdoi/192425953
 
-Note: This disclaimer was originally written by
-`Adrienne Lowe <https://github.com/adriennefriend>`_ for a
-`PyCon talk <https://www.youtube.com/watch?v=6Uj746j9Heo>`_, and was adapted by
-astronat based on its use in the README file for the
-`MetPy project <https://github.com/Unidata/MetPy>`_.
+.. |License| image:: https://img.shields.io/badge/License-BSD%203--Clause-blue.svg
+   :target: https://opensource.org/licenses/BSD-3-Clause
+
+.. |PyPI| image:: https://badge.fury.io/py/astronat.svg
+   :target: https://badge.fury.io/py/astronat
+
+.. |Coveralls| image:: https://coveralls.io/repos/github/nstarman/astronat/badge.svg?branch=master
+   :target: https://coveralls.io/github/nstarman/astronat?branch=master
