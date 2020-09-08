@@ -38,42 +38,26 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
-from typing_extensions import Literal
 
-
-# THIRD PARTY
-
+import numpy as np
+from astropy.coordinates import SkyCoord  # TODO not need
 from astropy.coordinates import (
     concatenate,
     frame_transform_graph,
     match_coordinates_3d,
-    SkyCoord,  # TODO not need
 )
-from astropy.coordinates.attributes import (
-    CoordinateAttribute,
-    # QuantityAttribute,
-    Attribute,
-)
+from astropy.coordinates.attributes import Attribute  # QuantityAttribute,
+from astropy.coordinates.attributes import CoordinateAttribute
 from astropy.coordinates.baseframe import BaseCoordinateFrame
 from astropy.coordinates.transformations import FunctionTransform
-
-import numpy as np
 from scipy import interpolate
+from typing_extensions import Literal
 
-
-# PROJECT-SPECIFIC
-
-from .utils import (
-    catalog_match_track,
-    catalog_match_inverse_track,
-)
 from ..attributes import PotentialAttribute
 from ..representations import OrbitOffsetCartesianRepresentation
 from ..transformations import FunctionWithKwargTransform
-
+from .utils import catalog_match_inverse_track, catalog_match_track
 
 ##############################################################################
 # PARAMETERS

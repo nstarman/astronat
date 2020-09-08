@@ -18,18 +18,8 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# PROJECT-SPECIFIC
-
-from . import (
-    # core and decorators
-    test_core,
-    test_decorators,
-    # added units
-    test_amuse,
-    test_composite,
-    test_full_amuse,
-)
-
+from . import test_composite  # core and decorators; added units
+from . import test_amuse, test_core, test_decorators, test_full_amuse
 
 ##############################################################################
 # END

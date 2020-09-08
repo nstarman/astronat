@@ -35,21 +35,14 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
 import numpy as np
 
-
-# PACKAGE-SPECIFIC
-from ..units import (
-    quantity_io,
-    deg as DEG,
-    pc as PC,
-    mag as MAG,
-    AU,
-    m as METER,
-)
-
+from ..units import AU
+from ..units import deg as DEG
+from ..units import m as METER
+from ..units import mag as MAG
+from ..units import pc as PC
+from ..units import quantity_io
 
 ###############################################################################
 # Distance Modulus

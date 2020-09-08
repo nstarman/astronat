@@ -6,15 +6,9 @@
 ###############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 from __future__ import absolute_import
 
-
-# THIRD PARTY
-
 from astropy import config as _config
-
 
 ###############################################################################
 # CODE
@@ -34,10 +28,8 @@ class Conf(_config.ConfigNamespace):
     )
 
 
-# /class
-
-
 conf = Conf()
+# /class
 
 
 ###############################################################################

@@ -15,19 +15,9 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import os
 
-
-# PROJECT-SPECIFIC
-
-from .. import (
-    constants,
-    units,
-    utils,
-)
-
+from .. import constants, units, utils
 
 ##############################################################################
 # TESTS
@@ -105,6 +95,8 @@ def test_init_units():
         # core
         "quantity_return_",
         "UnitableType",
+        "from_amuse",
+        "hms_str_to_unit",
         # decorators
         "quantity_output",
         "quantity_io",

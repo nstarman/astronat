@@ -12,21 +12,11 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
 import warnings
+from collections.abc import Sequence
 
-
-# THIRD PARTY
-
-
-# PROJECT-SPECIFIC
-
-
-##############################################################################
-# PARAMETERS
-
+from utilipy.utils.typing import TableType
 
 ##############################################################################
 # CODE
@@ -34,8 +24,8 @@ import warnings
 
 
 def rename_columns(
-    table, rename: T.Dict[str, str], warn_mismatch: bool = True
-):
+    table: TableType, rename: T.Dict[str, str], warn_mismatch: bool = True
+) -> TableType:
     """Rename columns in Table.
 
     Parameters
@@ -56,6 +46,8 @@ def rename_columns(
     renamed = rename.copy()  # copy of rename dict, for putting in meta.
 
     # iterate through dictionary, renaming columns
+    name: str
+    new_name: str
     for name, new_name in rename.items():
 
         if name in table.colnames:
@@ -73,6 +65,8 @@ def rename_columns(
 
             del renamed[name]  # del so don't add to meta
 
+        # /if
+
     # /for
 
     table.meta["rename"] = renamed  # store rename dict in meta
@@ -87,11 +81,11 @@ def rename_columns(
 
 
 def cast_columns(
-    table,
-    recast: T.Dict[str, str],
+    table: TableType,
+    recast: T.Dict[str, T.Union[T.Any, T.Tuple[T.Any, bool]]],
     warn_mismatch: bool = True,
-    elementwise=False,
-):
+    elementwise: bool = False,
+) -> TableType:
     """Cast Table column types.
 
     Parameters
@@ -112,35 +106,49 @@ def cast_columns(
     recast = recast.copy()  # copy of rename dict, for putting in meta.
 
     # iterate through dictionary, renaming columns
-    for name, new_type in recast.items():
+    names: T.Tuple[str] = tuple(recast.keys())
+    name: str
 
-        if isinstance(new_type, (list, tuple)):
+    for name in names:  # need to preload so don't change size
+        new_type = recast[name]
+
+        if name not in table.colnames:
+            if warn_mismatch:
+                warnings.warn(f"{name} not in table.")
+            del recast[name]
+
+            continue
+        # /def
+
+        if isinstance(new_type, Sequence):
             new_type, _elementwise = new_type
         else:
             _elementwise = elementwise
 
-        if name in table.colnames:
-            if not _elementwise:
-                # first try applying to whole column
-                # this has the advantage of not creating ``object``s as
-                # the value in each row of the column
+        if not _elementwise:
+            # first try applying to whole column
+            # this has the advantage of not creating ``object``s as
+            # the value in each row of the column
+            try:
+                col = table[name].astype(new_type)
+            # if that fails, apply function element-wise
+            except Exception:
                 try:
-                    table[name] = new_type(table[name])
-                # if that fails, apply function element-wise
+                    col = new_type(table[name])
                 except Exception:
-                    table[name] = [new_type(x) for x in table[name]]
+                    _elementwise = True
+                else:
+                    table[name] = col
             else:
-                table[name] = [new_type(x) for x in table[name]]
+                table[name] = col
 
-        else:
-            if warn_mismatch:
-                warnings.warn(f"{name} not in table.")
-
-            del recast[name]
+        if _elementwise:
+            table[name] = [new_type(x) for x in table[name]]
 
     # /for
 
-    table.meta["recast"] = str(recast)  # store rename in meta
+    table.meta["recast"]: str = str(recast)  # store recast in meta
+    # TODO change function
 
     return table
 

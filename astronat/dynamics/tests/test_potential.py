@@ -13,14 +13,9 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
 import pytest
 
-
-# PROJECT-SPECIFIC
-
-from .. import potential
+# from astronat.dynamics import potential
 
 
 ##############################################################################

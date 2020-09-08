@@ -1,34 +1,27 @@
 # -*- coding: utf-8 -*-
 
-"""Units Utilities."""
-
-__author__ = "Nathaniel Starkman"
-
-
-__all__ = [
-    "quantity_return_",
-]
+"""Units."""
 
 
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import textwrap
-
-from typing import Union, Sequence, Any, TypeVar
-
-
-# THIRD PARTY
-
-from astropy.units.core import *
+import typing as T
 
 import astropy.units as u
-from astropy.units.core import Unit, IrreducibleUnit
+from astropy.units.core import *  # noqa
+from astropy.units.core import IrreducibleUnit, Unit
 from astropy.utils.decorators import format_doc
-
 from utilipy.utils.typing import UnitableType
+
+##############################################################################
+# PARAMETERS
+
+__all__ = [
+    "quantity_return_",
+]
+# __all__ += core.__all__
 
 
 ##############################################################################
@@ -45,8 +38,7 @@ equivalencies: list, optional
     equivalencies for ``.to()`` and ``.to_value()``
     only used if `unit` to `to_value` are not None/False
 decompose: bool or list, optional
-    unit decomposition
-    default, False
+    Unit decomposition. Default, False.
 
     * bool: True, False for decomposing.
     * list: bases for ``.decompose(bases=[])``.
@@ -94,11 +86,11 @@ _doc_base_raises = """
     raises=textwrap.indent(_doc_base_raises, "    "),
 )
 def quantity_return_(
-    res: Any,
-    unit: Union[None, UnitableType] = None,
+    res: T.Any,
+    unit: T.Union[None, UnitableType] = None,
     to_value: bool = False,
     equivalencies: list = [],
-    decompose: Union[bool, Sequence] = False,
+    decompose: T.Union[bool, T.Sequence] = False,
 ):
     """Control function return of :class:`~astropy.units.Quantity`.
 

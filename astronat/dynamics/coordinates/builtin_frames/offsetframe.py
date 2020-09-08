@@ -17,46 +17,41 @@ https://docs.astropy.org/en/stable/api/astropy.coordinates.builtin_frames.Galact
 __author__ = "Nathaniel Starkman"
 __credits__ = ["astropy"]
 
-# __all__ = [
-#     ""
-# ]
-
 
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
 from astropy import units as u
-from astropy.utils.decorators import format_doc
-from astropy.coordinates.angles import Angle
-from astropy.coordinates.matrix_utilities import (
-    rotation_matrix,
-    matrix_product,
-    matrix_transpose,
-)
-from astropy.coordinates import representation as r
-from astropy.coordinates.baseframe import (
-    BaseCoordinateFrame,
-    frame_transform_graph,
-    base_doc,
-)
 from astropy.coordinates.attributes import (
     CoordinateAttribute,
     QuantityAttribute,
-    DifferentialAttribute,
+)
+from astropy.coordinates.baseframe import (
+    BaseCoordinateFrame,
+    frame_transform_graph,
+)
+from astropy.coordinates.matrix_utilities import (
+    matrix_product,
+    matrix_transpose,
+    rotation_matrix,
 )
 from astropy.coordinates.transformations import (
-    AffineTransform,
     DynamicMatrixTransform,
     FunctionTransform,
 )
-from astropy.coordinates.errors import ConvertError
-from astropy.coordinates import ICRS
+
+# from astropy.coordinates.attributes import DifferentialAttribute
+# from astropy.coordinates.baseframe import base_doc
+# from astropy.coordinates.errors import ConvertError
+# from astropy.coordinates.transformations import AffineTransform
+# from astropy.utils.decorators import format_doc
+
+# from astropy.coordinates import ICRS
+# from astropy.coordinates import representation as r
+# from astropy.coordinates.angles import Angle
 
 
-# PROJECT-SPECIFIC
-
+# __all__
 __all__ = ["OffsetFrame"]
 
 

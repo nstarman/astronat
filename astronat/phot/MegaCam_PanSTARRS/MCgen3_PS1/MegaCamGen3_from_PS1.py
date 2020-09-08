@@ -20,20 +20,10 @@ __all__ = [
 #############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import warnings
 
-
-# THIRD PARTY
-
-from astropy.table import QTable
-
-
-# PROJECT-SPECIFIC
-
-from ....units import quantity_io, mag as MAG
-
+from ....units import mag as MAG
+from ....units import quantity_io
 
 #############################################################################
 # CODE

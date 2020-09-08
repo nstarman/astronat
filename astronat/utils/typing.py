@@ -18,16 +18,8 @@ __all__ = [
 ###############################################################################
 # IMPORTS
 
-# CUSTOM
-
-from utilipy.utils.typing import (
-    array_like,
-    # astropy
-    FrameOptionsType,
-    TableType,
-    UnitableType,
-)
-
+from utilipy.utils.typing import TableType  # astropy
+from utilipy.utils.typing import FrameOptionsType, UnitableType, array_like
 
 ###############################################################################
 # CODE

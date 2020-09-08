@@ -44,7 +44,7 @@ __all__ = [
     "xmatch_coords",
     # "indices_xfind_coords",  # TODO
     # "xfind_coords",  # TODO
-    "XMatch",
+    "xmatch",
     # conversions
     "xmatch_decorator",
 ]
@@ -57,30 +57,25 @@ __all__ = [
 
 import typing as T
 
+import astropy.coordinates as coord
+import astropy.units as u
+import numpy as np
+from astropy.coordinates import BaseCoordinateFrame as BCFrame
+from astropy.coordinates import SkyCoord
+from astropy.table import Table
+from utilipy.data_utils.crossmatch import (
+    indices_xmatch_fields,
+    non_xmatched,
+    xmatch_fields,
+)
+from utilipy.utils import functools, inspect
+
+from .core import xmatch_data_graph as xdg
 
 # THIRD PARTY
 
-import astropy.coordinates as coord
-from astropy.coordinates import (
-    SkyCoord,
-    BaseCoordinateFrame as BCFrame,
-)
-from astropy.table import Table
-import astropy.units as u
-
-import numpy as np
-
-from utilipy.utils import inspect, functools
-from utilipy.data_utils.xmatch import (
-    indices_xmatch_fields,
-    xmatch_fields,
-    non_xmatched,
-)
-
 
 # PROJECT-SPECIFIC
-
-from .core import xmatch_data_graph as xdg
 
 
 ##############################################################################
@@ -714,7 +709,7 @@ def xmatch_many_coords(
 # )
 # @static_citation_decorator(citation="https://github.com/jobovy/gaia_tools/")
 @u.quantity_input(maxdist=("angle", "length"))
-def XMatch(
+def xmatch(
     cat1,
     cat2,
     maxdist=1 * u.arcsec,

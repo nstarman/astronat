@@ -1,25 +1,16 @@
 # -*- coding: utf-8 -*-
 
-"""Test data."""
+"""Test `~astronat.phot.MegaCam_PanSTARRS.data`."""
 
-# __all__ = [
-#     ""
-# ]
+__all__ = ["test_MegaCamGen1_from_PS1"]
 
 
 ##############################################################################
 # IMPORTS
 
-# GENERAL
-
 from astropy.table import QTable
 
-# CUSTOM
-
-# PROJECT-SPECIFIC
-
 from .. import data
-
 
 ##############################################################################
 # PARAMETERS
@@ -31,6 +22,13 @@ from .. import data
 
 
 def test_MegaCamGen1_from_PS1():
+    """Test `~astronat.phot.MegaCam_PanSTARRS.data.read_MegaCamGen1_from_PS1`.
+
+    .. todo::
+
+        finish
+
+    """
     df = data.read_MegaCamGen1_from_PS1()
 
     assert isinstance(df, QTable)

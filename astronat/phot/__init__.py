@@ -21,6 +21,5 @@ __all__ = [
 # Import top-level modules
 from . import MegaCam_PanSTARRS
 
-
 #############################################################################
 # END

@@ -39,24 +39,13 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# GENERAL
-
 from astropy import constants
-from astropy.constants import *
-
-# PROJECT-SPECIFIC
-
-from .setup_package import conf
+from astropy.constants import *  # noqa
 
 from ._frozen import FrozenConstants, frozen
-from .values import ConstantsValues, values as default_values
-
-# import top level packages
-from . import (
-    values,
-    _frozen,
-)
-
+from .setup_package import conf
+from .values import ConstantsValues
+from .values import values as default_values
 
 # -------------------------------------------------------------------
 # __ALL__
@@ -64,6 +53,7 @@ from . import (
 __all_top_imports__ = ("values", "_frozen")
 
 __all__ += list(__all_top_imports__)
+# __all__ += constants.__all__
 
 
 #############################################################################

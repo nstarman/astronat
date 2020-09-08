@@ -63,46 +63,32 @@ __all__ = [
 #############################################################################
 # IMPORTS
 
-# PROJECT-SPECIFIC
-
 from . import Mixed_MegaCamGen1_PS1 as mixed
-
-from .MegaCamGen1_from_PS1 import (
-    U_MP9301,
-    U_MP9301 as u_MC,
-    G_MP9401,
-    G_MP9401 as g_MC,
-    R_MP9601,
-    R_MP9601 as r_MC,
-    I_MP9701,
-    I_MP9701 as i_MC,
-    Z_MP9801,
-    Z_MP9801 as z_MC,
-    UmG as umg_MC,
-    UmR as umr_MC,
-    UmI as umi_MC,
-    UmZ as umz_MC,
-    GmR as gmr_MC,
-    GmI as gmi_MC,
-    GmZ as gmz_MC,
-    RmI as rmi_MC,
-    RmZ as rmz_MC,
-    ImZ as imz_MC,
-)
-
-from .PS1_from_MegaCamGen1 import (
-    G as g_PS,
-    R as r_PS,
-    I_band as i_PS,
-    Z as z_PS,
-    GmR as gmr_PS,
-    GmI as gmi_PS,
-    GmZ as gmz_PS,
-    RmI as rmi_PS,
-    RmZ as rmz_PS,
-    ImZ as imz_PS,
-)
-
+from .MegaCamGen1_from_PS1 import G_MP9401 as g_MC
+from .MegaCamGen1_from_PS1 import I_MP9701 as i_MC
+from .MegaCamGen1_from_PS1 import R_MP9601 as r_MC
+from .MegaCamGen1_from_PS1 import U_MP9301 as u_MC
+from .MegaCamGen1_from_PS1 import Z_MP9801 as z_MC
+from .MegaCamGen1_from_PS1 import GmI as gmi_MC
+from .MegaCamGen1_from_PS1 import GmR as gmr_MC
+from .MegaCamGen1_from_PS1 import GmZ as gmz_MC
+from .MegaCamGen1_from_PS1 import ImZ as imz_MC
+from .MegaCamGen1_from_PS1 import RmI as rmi_MC
+from .MegaCamGen1_from_PS1 import RmZ as rmz_MC
+from .MegaCamGen1_from_PS1 import UmG as umg_MC
+from .MegaCamGen1_from_PS1 import UmI as umi_MC
+from .MegaCamGen1_from_PS1 import UmR as umr_MC
+from .MegaCamGen1_from_PS1 import UmZ as umz_MC
+from .PS1_from_MegaCamGen1 import G as g_PS
+from .PS1_from_MegaCamGen1 import GmI as gmi_PS
+from .PS1_from_MegaCamGen1 import GmR as gmr_PS
+from .PS1_from_MegaCamGen1 import GmZ as gmz_PS
+from .PS1_from_MegaCamGen1 import I_band as i_PS
+from .PS1_from_MegaCamGen1 import ImZ as imz_PS
+from .PS1_from_MegaCamGen1 import R as r_PS
+from .PS1_from_MegaCamGen1 import RmI as rmi_PS
+from .PS1_from_MegaCamGen1 import RmZ as rmz_PS
+from .PS1_from_MegaCamGen1 import Z as z_PS
 
 #############################################################################
 # END

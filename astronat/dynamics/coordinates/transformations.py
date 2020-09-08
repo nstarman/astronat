@@ -18,27 +18,15 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import functools
 import typing as T
-from warnings import warn
 
-
-# THIRD PARTY
-
-from astropy.utils.exceptions import AstropyWarning
-from astropy.coordinates.representation import BaseRepresentation
+import astropy.units as u
 from astropy.coordinates.transformations import (
     FunctionTransform,
     FunctionTransformWithFiniteDifference,
 )
-import astropy.units as u
-
 from astropy.utils.decorators import format_doc
-
-# PROJECT-SPECIFIC
-
 
 ##############################################################################
 # PARAMETERS

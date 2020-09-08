@@ -10,36 +10,7 @@ For equivalent functions with the full set of bells and whistles, see
 
 __author__ = "Nathaniel Starkman"
 
-
-##############################################################################
-# IMPORTS
-
-# BUILT-IN
-
-import typing as T
-
-
-# THIRD PARTY
-
-import numpy as np
-
-
-# PROJECT-SPECIFIC
-
-from .distance import (
-    scale_factor,
-    hubble_distance,
-    luminosity_distance,
-    comoving_transverse_distance,
-    angular_diameter_distance,
-    comoving_distance,
-)
-
-
-##############################################################################
-# PARAMETERS
-
-__all__: T.List[str] = [
+__all__ = [
     "scale_factor",
     "hubble_distance",
     "luminosity_distance",
@@ -49,6 +20,22 @@ __all__: T.List[str] = [
     "Hubble_parameterization",
 ]
 
+
+##############################################################################
+# IMPORTS
+
+import typing as T
+
+import numpy as np
+
+from .distance import (
+    angular_diameter_distance,
+    comoving_distance,
+    comoving_transverse_distance,
+    hubble_distance,
+    luminosity_distance,
+    scale_factor,
+)
 
 ###############################################################################
 # CODE

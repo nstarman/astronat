@@ -30,17 +30,14 @@ __all__ = [
 ###############################################################################
 # IMPORTS
 
-# GENERAL
-
 import importlib
+import typing as T
 import warnings
 from contextlib import contextmanager
-import typing as T
 
-# astropy
 import astropy
-from astropy.utils import find_current_module
 from astropy import constants as consts
+from astropy.utils import find_current_module
 
 try:
     astropy.physical_constants
@@ -57,18 +54,11 @@ else:
     )
 
 
-# PROJECT-SPECIFIC
-
-from . import conf
-from . import data
+from .. import units as u
+from . import conf, data
 from ._frozen import frozen as frozenconstants
 
-from .. import units as u
-
-
-###############################################################################
 # __ALL__
-
 __all__ += data.__all_constants__
 
 

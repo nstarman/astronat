@@ -20,7 +20,6 @@ __all__ = [
     # Mixed_MegaCamGen2_PS1
     "mixed",
     # MegaCamGen2_from_PS1
-    "I_MP9702",
     "i_MC",
 ]
 
@@ -29,9 +28,7 @@ __all__ = [
 # IMPORTS
 
 from . import Mixed_MegaCamGen2_PS1 as mixed
-
-from .MegaCamGen2_from_PS1 import I_MP9702, I_MP9702 as i_MC
-
+from .MegaCamGen2_from_PS1 import I_MP9702 as i_MC
 
 #############################################################################
 # END

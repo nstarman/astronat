@@ -16,18 +16,9 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
-# THIRD PARTY
-
 import astropy.coordinates as coord
 import astropy.units as u
-
 from astropy.modeling import FittableModel
-
-
-# PROJECT-SPECIFIC
-
 
 ##############################################################################
 # PARAMETERS

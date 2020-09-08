@@ -4,25 +4,23 @@
 
 __author__ = "Nathaniel Starkman"
 
-__all__ = ["GalpyCompositePotential"]
+__all__ = [
+    "GalpyCompositePotential",
+    # Types
+    "GalpyBasePotentialType",
+    "GalpyPotentialType",
+]
 
 
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import collections.abc as abc
 import typing as T
 import warnings
-
 from collections import OrderedDict
 
-
-# THIRD PARTY
-
 from galpy.potential import Potential
-
 
 ##############################################################################
 # Parameters
@@ -70,9 +68,7 @@ class GalpyCompositePotential(list):
 
     def __init__(
         self,
-        pots: T.Union[
-            None, GalpyBasePotentialType
-        ] = None,  # TODO add in GalpyCompositePotential
+        pots: T.Optional[GalpyBasePotentialType] = None,  # TODO also self type
         names: T.Union[str, T.Sequence, None] = None,
         **components,
     ):
@@ -100,10 +96,11 @@ class GalpyCompositePotential(list):
             component to which the potential corresponds.
 
         """
-        self._components = OrderedDict()
+        self._components = OrderedDict()  # where the indices are stored
+
         if pots is not None:
             comps = self.pack_pots(pots, names=names)
-        else:
+        else:  # pots is None
             comps = OrderedDict()
 
         intersect = set(comps).intersection(components)
@@ -133,6 +130,7 @@ class GalpyCompositePotential(list):
         """
         if isinstance(key, str):
             key = self._components[key]
+
         elif isinstance(key, slice):
             if isinstance(key.start, str):
                 start = self._components[key.start]
@@ -168,7 +166,18 @@ class GalpyCompositePotential(list):
 
     # # /def
 
-    def extend(self, pots, names=None):
+    def extend(
+        self,
+        pots: T.Union[GalpyBasePotentialType, T.Sequence, T.Mapping],
+        names: T.Union[str, T.Sequence, None] = None,
+    ):
+        """Extend Composite Potential.
+
+        Parameters
+        ----------
+        pots : dict
+
+        """
         comps = self.pack_pots(pots, names)
 
         intersect = set(comps).intersection(self._components.keys())
@@ -186,7 +195,7 @@ class GalpyCompositePotential(list):
 
     # /def
 
-    def insert(self, index, values):
+    def insert(self, index: int, values):
         # need to also update the _components
         raise Exception("NOT YET IMPLEMENTED")
 
@@ -232,7 +241,6 @@ class GalpyCompositePotential(list):
 
     # /def
 
-    # @staticmethod
     def pack_pots(
         self,
         pots: T.Union[

@@ -30,6 +30,5 @@ __all_top_imports__ = (
 # import top level packages
 from . import convert, data, modeling, table, typing
 
-
 ##############################################################################
 # END
