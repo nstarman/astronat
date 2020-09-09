@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# ----------------------------------------------------------------------------
-#
-# TITLE   : unit decorators
-# PROJECT : astronat
-#
-# ----------------------------------------------------------------------------
-
 """Decorators for functions accepting Astropy Quantities."""
 
 __author__ = "Nathaniel Starkman"
@@ -19,28 +12,18 @@ __all__ = ["quantity_output", "QuantityInputOutput", "quantity_io"]
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import textwrap
 import typing as T
 
-
-# THIRD-PARTY
-
 from astropy.units import dimensionless_unscaled
-from astropy.units.decorators import _validate_arg_value, _get_allowed_units
 from astropy.units.core import Unit, add_enabled_equivalencies
-from astropy.utils.misc import isiterable
+from astropy.units.decorators import _get_allowed_units, _validate_arg_value
 from astropy.utils.decorators import format_doc
-
+from astropy.utils.misc import isiterable
 from utilipy.utils import functools, inspect
 from utilipy.utils.typing import UnitableType
 
-
-# PROJECT-SPECIFIC
-
-from .core import quantity_return_, _doc_base_params, _doc_base_raises
-
+from .core import _doc_base_params, _doc_base_raises, quantity_return_
 
 ###############################################################################
 # PARAMETERS
@@ -58,7 +41,7 @@ _aioattrs = (
 # ----------------------------------------
 
 
-_doc_quantity_output_examples = """
+_doc_quantity_output_examples: str = """
 `quantity_output` decorated function
 
     >>> from astronat.units.decorators import quantity_output
@@ -73,8 +56,9 @@ _doc_quantity_output_examples = """
     <Quantity 10000. m>
 
 """
+_doc_quantity_output_examples = _doc_quantity_output_examples[1:]
 
-_doc_quantity_output_wrapped = """
+_doc_quantity_output_wrapped: str = """
 Other Parameters
 ----------------
 {parameters}
@@ -96,7 +80,7 @@ Examples
 # ----------------------------------------
 
 # QuantityInputOutput parameters, combine base and assumed_units
-_doc_qio_params = """function: Callable
+_doc_qio_params: str = """function: Callable
     the function to decorate (default None)
 {parameters}
 
@@ -123,7 +107,7 @@ assume_annotation_units: bool, optional
     parameters=_doc_base_params,
 )
 
-_doc_qio_notes = """
+_doc_qio_notes: str = """
 Order of Precedence:
 
 1. Function Arguments
@@ -161,7 +145,7 @@ Function Annotation Arguments:
 """
 
 # TODO replace
-_funcdec = """
+_funcdec: str = """
 
 Other Parameters
 ----------------
@@ -182,9 +166,9 @@ Other Parameters
     parameters=textwrap.indent(_doc_base_params, " " * 4)[4:],
     raises=textwrap.indent(_doc_base_raises, " " * 4),
     examples=textwrap.indent(_doc_quantity_output_examples, " " * 4),
-    doc_quantity_output_wrapped=textwrap.indent(
-        _doc_quantity_output_wrapped, " " * 12 + "| "
-    ),
+    # doc_quantity_output_wrapped=textwrap.indent(
+    #     _doc_quantity_output_wrapped, " " * 12 + "| "
+    # ),
 )
 def quantity_output(
     function: T.Callable = None,
@@ -209,10 +193,6 @@ def quantity_output(
         wrapped function
         with the unit operations performed by
         :func:`~astronat.units.quantity_return_`
-
-        The following is added to the docstring
-
-            {doc_quantity_output_wrapped}
 
     Raises
     ------
@@ -253,12 +233,12 @@ def quantity_output(
     @functools.wraps(function)
     @format_doc(
         None,
-        parameters=textwrap.indent(_doc_base_params, " " * 8),
-        raises=textwrap.indent(_doc_base_raises, " " * 8),
-        examples=textwrap.indent(_doc_quantity_output_examples, " " * 8),
         # _doc_quantity_output_wrapped=textwrap.indent(
         #     _doc_quantity_output_wrapped, " " * 8
         # ),
+        parameters=textwrap.indent(_doc_base_params, " " * 8)[8:],
+        raises=textwrap.indent(_doc_base_raises, " " * 8)[8:],
+        examples=textwrap.indent(_doc_quantity_output_examples, " " * 8)[8:],
     )
     def wrapper(
         *args: T.Any,
@@ -461,7 +441,7 @@ class QuantityInputOutput:
                 }:
                     continue
 
-                # Catch the (never triggered) case where bind relied on a default value.
+                # Catch the (never) case where bind relied on a default value.
                 if (
                     param.name not in bound_args.arguments
                     and param.default is not param.empty
@@ -472,7 +452,8 @@ class QuantityInputOutput:
                 arg = bound_args.arguments[param.name]
 
                 # +----------------------------------+
-                # Get default unit or physical type, either from decorator kwargs
+                # Get default unit or physical type,
+                # either from decorator kwargs
                 #   or annotations
                 if param.name in assumed_units:
                     dfunit = assumed_units[param.name]

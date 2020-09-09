@@ -40,18 +40,11 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
 from astropy.coordinates.baseframe import frame_transform_graph
 
-
-# PROJECT-SPECIFIC
-
-from .orbitskyoffset import OrbitSkyOffsetFrame
+from . import orbitoffset, orbitskyoffset
 from .orbitoffset import OrbitOffsetFrame
-
-from . import orbitskyoffset, orbitoffset
-
+from .orbitskyoffset import OrbitSkyOffsetFrame
 
 # TODO: Astropy < 3.1.2 does not have make_transform_graph_docs
 try:

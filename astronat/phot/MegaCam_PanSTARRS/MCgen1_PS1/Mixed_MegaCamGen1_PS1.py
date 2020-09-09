@@ -12,16 +12,11 @@ __all__ = ["iCFHT", "rPS", "CFHTtoPanstarrs_gmr"]
 #############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
 from astropy.table import Table
 
-
-# PROJECT-SPECIFIC
-
+from ....units import mag as MAG
+from ....units import quantity_io
 from . import PS1_from_MegaCamGen1
-from ....units import quantity_io, mag as MAG
-
 
 #############################################################################
 # CODE

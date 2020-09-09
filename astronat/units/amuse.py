@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# ----------------------------------------------------------------------------
-#
-# TITLE   : composite units
-# PROJECT : astronat
-#
-# ----------------------------------------------------------------------------
-
 """Astropy units, extended for AMUSE compatibility.
 
 These units are also available in the :mod:`~utilipy.units` namespace.
@@ -29,15 +22,11 @@ __author__ = "Nathaniel Starkman"
 ##############################################################################
 # IMPORTS
 
-# THIRD-PARTY
-
-import numpy as np
-
-import astropy.units as units
 import astropy.constants as constants
+import astropy.units as units
+import numpy as np
 from astropy.units.core import def_unit
 from astropy.units.utils import generate_unit_summary as _generate_unit_summary
-
 
 ##############################################################################
 # PARAMETERS

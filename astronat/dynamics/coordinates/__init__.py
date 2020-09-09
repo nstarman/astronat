@@ -9,36 +9,31 @@
 
 """
 
-__author__ = "Nathaniel Starkman"
 __credits__ = ["Astropy", "Jo Bovy", "Jeremy Webb"]
-
-# __all__ = [
-#     # modules
-#     "builtin_frames",
-#     "attributes",
-#     "representations",
-#     # specific
-#     "OrbitSkyOffsetRepresentation",
-#     "OrbitSkyOffsetUnitRepresentation",
-# ]
 
 
 ##############################################################################
 # IMPORTS
 
-# BUILT IN
-
-# THIRD PARTY
-
-# PROJECT-SPECIFIC
-
-from .builtin_frames import *
-from .representations import *
-from .ic import PhaseSpacePosition
-
-# modules
 from . import attributes, builtin_frames, ic, representations
+from .builtin_frames import *
+from .ic import PhaseSpacePosition
+from .representations import *
 
+# __all__
+__all__ = [
+    # modules
+    "builtin_frames",
+    "attributes",
+    "representations",
+    "ic",
+    # specific
+    "PhaseSpacePosition",
+]
+__all__ += builtin_frames.__all__
+__all__ += representations.__all__
+# "OrbitSkyOffsetRepresentation",
+# "OrbitSkyOffsetUnitRepresentation",
 
 ##############################################################################
 # END

@@ -8,31 +8,25 @@ __credits__ = ["astropy", "astroquery"]
 
 
 __all__ = [
-    # top-level
+    # modules
     "core",
     "utils",
-    # specific
+    # classes
     "TableList",
     "QTableList",
     "TablesList",
+    # function
+    "rename_columns",
+    "cast_columns",
 ]
 
 
 ##############################################################################
 # IMPORTS
 
-# BUILT IN
-
-# THIRD PARTY
-
-# PROJECT-SPECIFIC
-
-from .core import TableList, QTableList, TablesList
-from .utils import rename_columns, cast_columns
-
-# top-level
 from . import core, utils
-
+from .core import QTableList, TableList, TablesList
+from .utils import cast_columns, rename_columns
 
 ##############################################################################
 # END

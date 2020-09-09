@@ -62,12 +62,7 @@ __all__ = ["PhaseSpacePosition"]
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
-
-
-# THIRD PARTY
 
 import astropy.coordinates as coords
 
@@ -80,10 +75,6 @@ else:
     _HAS_GALA = True
 
 from utilipy.utils.collections import ReferenceBase
-
-
-# PROJECT-SPECIFIC
-
 
 ##############################################################################
 # PARAMETERS

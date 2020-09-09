@@ -11,25 +11,15 @@ __all__ = ["from_amuse", "hms_str_to_unit"]
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
-
-
-# THIRD PARTY
 
 import astropy.coordinates as coord
 import astropy.units as u
-
-
-# PROJECT-SPECIFIC
+import numpy as np
 
 from . import Unit
-from .decorators import quantity_output
 
-
-###############################################################################
-# PARAMETERS
+# from .decorators import quantity_output
 
 ###############################################################################
 # CODE
@@ -72,8 +62,8 @@ def from_amuse(quantity):
 ###############################################################################
 
 
-@quantity_output(unit=u.deg)
-def hms_str_to_unit(hms: T.Sequence[str]):
+# @quantity_output(unit=u.deg)
+def hms_str_to_unit(hms: T.Sequence[str], empty_to_=np.NaN, copy=False):
     """Change a hms string to Astropy deg units.
 
     Parameters
@@ -81,8 +71,12 @@ def hms_str_to_unit(hms: T.Sequence[str]):
     hms : str
         hour-minute-second array of strings
 
+    Returns
+    -------
+    Angle
+
     """
-    return coord.Angle(hms, unit="hourangle")
+    return coord.Angle(hms, unit="hourangle", copy=copy)
 
 
 # /def

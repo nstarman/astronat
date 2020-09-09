@@ -29,26 +29,19 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
-import pytest
-
 import astropy.units as u
-
-
-# PROJECT-SPECIFIC
+import pytest
 
 from .. import core
 from ..decorators import (
+    QuantityInputOutput,
     _aioattrs,
+    _doc_qio_notes,
+    _doc_qio_params,
     _doc_quantity_output_examples,
     _doc_quantity_output_wrapped,
-    _doc_qio_params,
-    _doc_qio_notes,
     quantity_output,
-    QuantityInputOutput,
 )
-
 
 ##############################################################################
 # CODE

@@ -26,7 +26,6 @@ Utilipy [1]_, Astropy [2]_
 
 Examples
 --------
-
 help
 ^^^^
 
@@ -76,32 +75,16 @@ __all_top_imports__ = (
 # Packages may add whatever they like to this file, but
 # should keep this content at the top.
 # (sets the __version__)
-from ._astropy_init import *  # noqa
-from ._astropy_init import __version__  # noqa
+from ._astropy_init import *  # noqa  # isort:skip
+from ._astropy_init import __version__  # noqa  # isort:skip
 
-# CUSTOM
-
-import utilipy
-from utilipy.utils import typing as T
-
-
-# THIRD PARTY
+import typing as T
 
 import astropy.config as config
+from utilipy.decorators.code_dev import indev as _indev
 
-
-# PROJECT-SPECIFIC
-
-# import packages into top-level namespace
-from . import (  # noqa
-    utils,
-    constants,
-    dynamics,
-    # phot,
-    # sc,
-    units,
-)
-
+# modules
+from . import constants, dynamics, units, utils  # noqa
 
 #############################################################################
 # CONFIG FUNCTIONS
@@ -138,8 +121,8 @@ def online_help(query: T.Optional[str] = None):
         None (default) or "" is an empty search.
 
     """
-    from urllib.parse import urlencode
     import webbrowser
+    from urllib.parse import urlencode
 
     # process the query
     if query is None:  # empty query, empty search
@@ -164,9 +147,9 @@ def online_help(query: T.Optional[str] = None):
 # /def
 
 
-@utilipy.decorators.code_dev.indev
+@_indev
 def help(query: T.Optional[str] = None, online: bool = False):
-    """astronat help function.
+    """`astronat` help function.
 
     Parameters
     ----------

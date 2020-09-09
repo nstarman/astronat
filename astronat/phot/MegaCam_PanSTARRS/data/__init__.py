@@ -41,7 +41,6 @@ __all__ = [
 from astropy.table import QTable
 from astropy.utils.data import get_pkg_data_filename
 
-
 ###############################################################################
 # PARAMETERS
 

@@ -16,17 +16,10 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
+import astropy.units as units
 import pytest
 
-import astropy.units as units
-
-
-# PROJECT-SPECIFIC
-
 from .. import full_amuse as amu
-
 
 ##############################################################################
 # CODE

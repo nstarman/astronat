@@ -18,15 +18,9 @@ __all__ = ["test_quantity_return_"]
 ##############################################################################
 # IMPORTS
 
-# GENERAL
-
 import astropy.units as u
 
-
-# PROJECT-SPECIFIC
-
 from ..core import quantity_return_
-
 
 ##############################################################################
 # CODE

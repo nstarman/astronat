@@ -16,14 +16,11 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
 
-
-# THIRD PARTY
-
 from astropy.coordinates import Attribute
+
+from ..common import PotentialType
 
 # try:  # TODO do this in a central location
 #     from galpy.potential import Potential
@@ -40,10 +37,6 @@ from astropy.coordinates import Attribute
 # else:
 #     gala.__version__
 #     _HAS_GALA = True
-
-# PROJECT-SPECIFIC
-
-from ..common import PotentialType
 
 
 ##############################################################################

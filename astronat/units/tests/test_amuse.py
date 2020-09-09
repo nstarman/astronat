@@ -17,20 +17,12 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
+import astropy.constants as constants
+import astropy.units as units
+import numpy as np
 import pytest
 
-import numpy as np
-
-import astropy.units as units
-import astropy.constants as constants
-
-
-# PROJECT-SPECIFIC
-
 from .. import amuse as amu
-
 
 ##############################################################################
 # CODE

@@ -15,9 +15,8 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-from .. import values, data
+from .. import data, values
 from .._frozen import frozen as frozenconstants
-
 
 ##############################################################################
 # TESTS

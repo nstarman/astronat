@@ -1,44 +1,44 @@
 # -*- coding: utf-8 -*-
 
-# ----------------------------------------------------------------------------
-#
-# TITLE   : functions
-# PROJECT : astronat
-#
-# ----------------------------------------------------------------------------
-
-# Docstring and Metadata
 """Astronomy functions.
 
-TODO incorporate astropy cosmology
+.. todo::
+
+    incorporate astropy cosmology
 
 """
 
-__author__ = "Nathaniel Starkman"
+__all__ = [
+    "angular_distance_on_sky",
+    "apparent_to_absolute_magnitude",
+    "absolute_to_apparent_magnitude",
+    "distanceModulus_magnitude",
+    "distanceModulus_distance",
+    "distanceModulus",
+    "parallax_angle",
+    "parallax_distance",
+    "parallax",
+    "max_angular_separation",
+]
 
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
-import numpy as np
 import typing as T
 
-# THIRD PARTY
-
+import numpy as np
 from utilipy.data_utils import data_graph
 
+from .units import AU
+from .units import deg as DEG
+from .units import get_physical_type
+from .units import mag as MAG
+from .units import pc as PC
+from .units import quantity_io
+from .units import rad as RAD
 
-# PACKAGE-SPECIFIC
-from .units import (
-    quantity_io,
-    get_physical_type,
-    rad as RAD,
-    deg as DEG,
-    pc as PC,
-    mag as MAG,
-    AU,
-)
+##############################################################################
+# Parameters
 
 
 ##############################################################################

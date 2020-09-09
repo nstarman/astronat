@@ -17,20 +17,12 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# THIRD PARTY
-
-from astropy.coordinates import (
-    SkyCoord,
-    BaseCoordinateFrame as BCFrame,
-)
+from astropy.coordinates import BaseCoordinateFrame as BCFrame
+from astropy.coordinates import SkyCoord
 from astropy.table import Table
 from astropy.time import Time
-
-from utilipy.data_utils.xfm import (
-    data_graph as xmatch_data_graph,
-    DataTransform,
-)
-
+from utilipy.data_utils.xfm import DataTransform
+from utilipy.data_utils.xfm import data_graph as xmatch_data_graph
 
 ##############################################################################
 # DATA TRANFSFORM REGISTRY OVERRRIDES

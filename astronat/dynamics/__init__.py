@@ -18,27 +18,38 @@ __all__ = [
     "coordinates",
     "common",
     "potential",
+    # "vesc",
+    # Types
+    "PotentialType",
+    "GalpyBasePotentialType",
+    "GalpyPotentialType",
+    "GalaPotentialType",
+    # transformations
+    "galpy_Orbit_to_SkyCoord",
+    "galpy_Orbit_to_gala_Orbit",
+    "gala_Orbit_to_galpy_Orbit",
     # functions
     "PhaseSpacePosition",
+    "GalpyCompositePotential",
 ]
 
 
 ##############################################################################
 # IMPORTS
 
-# BUILT IN
-
-
-# THIRD PARTY
-
-
-# PROJECT-SPECIFIC
-
 # modules
-from . import coordinates, common, potential
+from . import common, coordinates, potential
+from .common import GalaPotentialType, PotentialType
 
 # functions
 from .coordinates import PhaseSpacePosition
+from .potential import (
+    GalpyBasePotentialType,
+    GalpyCompositePotential,
+    GalpyPotentialType,
+)
+
+# from . import vesc
 
 
 ##############################################################################

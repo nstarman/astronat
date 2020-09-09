@@ -8,53 +8,9 @@ __credits__ = [
 ]
 
 __all__ = [
-    # MegaCamGen1_from_PS1
-    "U_MP9301",
-    "G_MP9401",
-    "R_MP9601",
-    "I_MP9701",
-    "Z_MP9801",
-    "umg_MC1PS1",
-    "umr_MC1PS1",
-    "umi_MC1PS1",
-    "umz_MC1PS1",
-    "gmr_MC1PS1",
-    "gmi_MC1PS1",
-    "gmz_MC1PS1",
-    "rmi_MC1PS1",
-    "rmz_MC1PS1",
-    "imz_MC1PS1",
-    # PS1_from_MegaCamGen1
-    "g_PS1MC1",
-    "r_PS1MC1",
-    "i_PS1MC1",
-    "z_PS1MC1",
-    "gmr_PS1MC1",
-    "gmi_PS1MC1",
-    "gmz_PS1MC1",
-    "rmi_PS1MC1",
-    "rmz_PS1MC1",
-    "imz_PS1MC1",
-    # mixed
-    "mixed_MC1PS1",
-    "mixed_PS1MC1",
-    # MegaCamGen2_from_PS1
-    "I_MP9702",
-    # PS1_from_MegaCamGen2
-    # mixed
-    "mixed_MC2PS1",
-    "mixed_PS1MC2",
-    # MegaCamGen3_from_PS1
-    "U_MP9302",
-    "G_MP9402",
-    "R_MP9602",
-    "I_MP9703",
-    "Z_MP9901",
-    "GRI_MP9605",
-    # PS1_from_MegaCamGen3
-    # mixed
-    "mixed_MC3PS1",
-    "mixed_PS1MC3",
+    "MCgen1_PS1",
+    "MCgen2_PS1",
+    "MCgen3_PS1",
     # General
     "UmG",
     "UmR",
@@ -68,78 +24,114 @@ __all__ = [
     "ImZ",
 ]
 
+# __all__ += [
+#     # MegaCamGen1_from_PS1
+#     "U_MP9301",
+#     "G_MP9401",
+#     "R_MP9601",
+#     "I_MP9701",
+#     "Z_MP9801",
+#     "umg_MC1PS1",
+#     "umr_MC1PS1",
+#     "umi_MC1PS1",
+#     "umz_MC1PS1",
+#     "gmr_MC1PS1",
+#     "gmi_MC1PS1",
+#     "gmz_MC1PS1",
+#     "rmi_MC1PS1",
+#     "rmz_MC1PS1",
+#     "imz_MC1PS1",
+#     # PS1_from_MegaCamGen1
+#     "g_PS1MC1",
+#     "r_PS1MC1",
+#     "i_PS1MC1",
+#     "z_PS1MC1",
+#     "gmr_PS1MC1",
+#     "gmi_PS1MC1",
+#     "gmz_PS1MC1",
+#     "rmi_PS1MC1",
+#     "rmz_PS1MC1",
+#     "imz_PS1MC1",
+#     # mixed
+#     "mixed_MC1PS1",
+#     "mixed_PS1MC1",
+#     # MegaCamGen2_from_PS1
+#     "I_MP9702",
+#     # PS1_from_MegaCamGen2
+#     # mixed
+#     "mixed_MC2PS1",
+#     "mixed_PS1MC2",
+#     # MegaCamGen3_from_PS1
+#     "U_MP9302",
+#     "G_MP9402",
+#     "R_MP9602",
+#     "I_MP9703",
+#     "Z_MP9901",
+#     "GRI_MP9605",
+#     # PS1_from_MegaCamGen3
+#     # mixed
+#     "mixed_MC3PS1",
+#     "mixed_PS1MC3",
+# ]
+
 
 #############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 from typing import Any
-from typing_extensions import Literal
-
-
-# THIRD PARTY
 
 from astropy.table import Table
+from typing_extensions import Literal
 
+from astronat import units
 
-# PROJECT-SPECIFIC
+from . import MCgen1_PS1, MCgen2_PS1, MCgen3_PS1
 
-from ... import units
-from .MCgen1_PS1 import (
-    # MegaCamGen1_from_PS1
-    U_MP9301,
+# Not in __all__
+# TODO deprecate, but needed in below functions
+from .MCgen1_PS1 import g_PS as g_PS1MC1
+from .MCgen1_PS1 import gmi_MC as gmi_MC1PS1
+from .MCgen1_PS1 import gmi_PS as gmi_PS1MC1
+from .MCgen1_PS1 import gmr_MC as gmr_MC1PS1
+from .MCgen1_PS1 import gmr_PS as gmr_PS1MC1
+from .MCgen1_PS1 import gmz_MC as gmz_MC1PS1
+from .MCgen1_PS1 import gmz_PS as gmz_PS1MC1
+from .MCgen1_PS1 import i_PS as i_PS1MC1
+from .MCgen1_PS1 import imz_MC as imz_MC1PS1
+from .MCgen1_PS1 import imz_PS as imz_PS1MC1
+from .MCgen1_PS1 import mixed as mixed_MC1PS1
+from .MCgen1_PS1 import mixed as mixed_PS1MC1
+from .MCgen1_PS1 import r_PS as r_PS1MC1
+from .MCgen1_PS1 import rmi_MC as rmi_MC1PS1
+from .MCgen1_PS1 import rmi_PS as rmi_PS1MC1
+from .MCgen1_PS1 import rmz_MC as rmz_MC1PS1
+from .MCgen1_PS1 import rmz_PS as rmz_PS1MC1
+from .MCgen1_PS1 import umg_MC as umg_MC1PS1
+from .MCgen1_PS1 import umi_MC as umi_MC1PS1
+from .MCgen1_PS1 import umr_MC as umr_MC1PS1
+from .MCgen1_PS1 import umz_MC as umz_MC1PS1
+from .MCgen1_PS1 import z_PS as z_PS1MC1
+from .MCgen1_PS1.MegaCamGen1_from_PS1 import (
     G_MP9401,
-    R_MP9601,
     I_MP9701,
+    R_MP9601,
+    U_MP9301,
     Z_MP9801,
-    umg_MC as umg_MC1PS1,
-    umr_MC as umr_MC1PS1,
-    umi_MC as umi_MC1PS1,
-    umz_MC as umz_MC1PS1,
-    gmr_MC as gmr_MC1PS1,
-    gmi_MC as gmi_MC1PS1,
-    gmz_MC as gmz_MC1PS1,
-    rmi_MC as rmi_MC1PS1,
-    rmz_MC as rmz_MC1PS1,
-    imz_MC as imz_MC1PS1,
-    # PS1_from_MegaCamGen1
-    g_PS as g_PS1MC1,
-    r_PS as r_PS1MC1,
-    i_PS as i_PS1MC1,
-    z_PS as z_PS1MC1,
-    gmr_PS as gmr_PS1MC1,
-    gmi_PS as gmi_PS1MC1,
-    gmz_PS as gmz_PS1MC1,
-    rmi_PS as rmi_PS1MC1,
-    rmz_PS as rmz_PS1MC1,
-    imz_PS as imz_PS1MC1,
-    # mixed
-    mixed as mixed_MC1PS1,
-    mixed as mixed_PS1MC1,
 )
 
-from .MCgen2_PS1 import (
-    # MegaCamGen2_from_PS1
-    I_MP9702,
-    # PS1_from_MegaCamGen2
-    # mixed
-    mixed as mixed_MC2PS1,
-    mixed as mixed_PS1MC2,
-)
-
-from .MCgen3_PS1 import (
-    # MegaCamGen3_from_PS1
-    U_MP9302,
+# mixed
+from .MCgen2_PS1 import mixed as mixed_MC2PS1
+from .MCgen2_PS1 import mixed as mixed_PS1MC2
+from .MCgen2_PS1.MegaCamGen2_from_PS1 import I_MP9702
+from .MCgen3_PS1 import mixed as mixed_MC3PS1
+from .MCgen3_PS1 import mixed as mixed_PS1MC3
+from .MCgen3_PS1.MegaCamGen3_from_PS1 import (
     G_MP9402,
-    R_MP9602,
-    I_MP9703,
-    Z_MP9901,
     GRI_MP9605,
-    # PS1_from_MegaCamGen3
-    # mixed
-    mixed as mixed_MC3PS1,
-    mixed as mixed_PS1MC3,
+    I_MP9703,
+    R_MP9602,
+    U_MP9302,
+    Z_MP9901,
 )
 
 #############################################################################
@@ -155,6 +147,8 @@ def _b1mb2(ps: Any, band1: str, band2: str, **kw: Any) -> Any:
 
 
 # /def
+
+# -------------------------------------------------------------------
 
 
 @units.quantity_io()
@@ -192,6 +186,8 @@ def UmG(
 
 # /def
 
+# -------------------------------------------------------------------
+
 
 @units.quantity_io()
 def UmR(
@@ -227,6 +223,8 @@ def UmR(
 
 
 # /def
+
+# -------------------------------------------------------------------
 
 
 @units.quantity_io()
@@ -264,6 +262,8 @@ def UmI(
 
 # /def
 
+# -------------------------------------------------------------------
+
 
 @units.quantity_io()
 def UmZ(
@@ -299,6 +299,8 @@ def UmZ(
 
 
 # /def
+
+# -------------------------------------------------------------------
 
 
 @units.quantity_io()
@@ -336,6 +338,8 @@ def GmR(
 
 # /def
 
+# -------------------------------------------------------------------
+
 
 @units.quantity_io()
 def GmI(
@@ -371,6 +375,8 @@ def GmI(
 
 
 # /def
+
+# -------------------------------------------------------------------
 
 
 @units.quantity_io()
@@ -408,6 +414,8 @@ def GmZ(
 
 # /def
 
+# -------------------------------------------------------------------
+
 
 @units.quantity_io()
 def RmI(
@@ -443,6 +451,8 @@ def RmI(
 
 
 # /def
+
+# -------------------------------------------------------------------
 
 
 @units.quantity_io()
@@ -480,6 +490,8 @@ def RmZ(
 
 # /def
 
+# -------------------------------------------------------------------
+
 
 @units.quantity_io()
 def ImZ(
@@ -515,6 +527,8 @@ def ImZ(
 
 
 # /def
+
+# -------------------------------------------------------------------
 
 #############################################################################
 # END

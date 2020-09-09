@@ -1,21 +1,27 @@
 # -*- coding: utf-8 -*-
 # see LICENSE.rst
 
-"""Test :mod:`~utilipy.constants`."""
+"""Test `~astronat.sc`."""
 
-__author__ = "Nathaniel Starkman"
-
-
-__all__ = [
-    "test_frozen",
-    "test_values",
-]
+# __all__ = [
+#     # modules
+#     "",
+#     # functions
+#     "",
+#     # other
+#     "",
+# ]
 
 
 ##############################################################################
 # IMPORTS
 
-from . import test_frozen, test_values
+# BUILT IN
+
+# THIRD PARTY
+
+# PROJECT-SPECIFIC
+
 
 ##############################################################################
 # END

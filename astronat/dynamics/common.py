@@ -18,29 +18,17 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
 
-
-# THIRD PARTY
-
-from astropy import coordinates as coords
-
-from galpy.orbit import Orbit as galpyOrbit
-
 import gala.potential as galapot
+from astropy import coordinates as coords
 from gala.dynamics import Orbit as galaOrbit
-
+from galpy.orbit import Orbit as galpyOrbit
 from utilipy.data_utils import DataTransform
 from utilipy.utils.typing import FrameOptionsType
 
-
-# PROJECT-SPECIFIC
-
-from .potential import GalpyBasePotentialType, GalpyPotentialType
 from ..common import data_graph
-
+from .potential import GalpyBasePotentialType, GalpyPotentialType
 
 ##############################################################################
 # PARAMETERS

@@ -21,18 +21,11 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT IN
-
 import functools
 
-
-# THIRD PARTY
-
-from astropy.coordinates import match_coordinates_sky, match_coordinates_3d
 import astropy.units as u
-
 import numpy as np
-
+from astropy.coordinates import match_coordinates_3d, match_coordinates_sky
 
 ##############################################################################
 # PARAMETERS
@@ -44,7 +37,7 @@ dmls = u.dimensionless_unscaled
 # CODE
 ##############################################################################
 
-##############################################################################
+#####################################################################
 # projected version
 
 

@@ -8,36 +8,33 @@ For equivalent functions with the full set of bells and whistles, see
 
 """
 
-__author__ = "Nathaniel Starkman"
-
 
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
 
-
-# THIRD PARTY
-
-import numpy as np
 import numba
-
-# PROJECT-SPECIFIC
-
+import numpy as np
 
 from ..constants import default_values as constants
-
 
 ##############################################################################
 # PARAMETERS
 
 __all__: T.List[str] = [
-    # "distance_to_modulus",
-    # "modulus_to_distance",
-    # "apparent_to_absolute_magnitude",
-    # "absolute_to_apparent_magnitude",
+    "lens_power",
+    "lateral_magnification",
+    "angular_magnification",
+    "radiosity",
+    "dielectric_mean_energy_density",
+    "doppler_wavelength",
+    "doppler_velocity",
+    "Cherenkov_angle",
+    "refractive_index_from_material",
+    "critical_angle",
+    "critical_angle_from_velocities",
+    "critical_angle_from_wavelength",
 ]
 
 

@@ -1,12 +1,5 @@
 # -*- coding: utf-8 -*-
 
-# ----------------------------------------------------------------------------
-#
-# TITLE   : composite units
-# PROJECT : astronat
-#
-# ----------------------------------------------------------------------------
-
 """Composite Astropy units."""
 
 __author__ = "Nathaniel Starkman"
@@ -18,19 +11,11 @@ __author__ = "Nathaniel Starkman"
 ##############################################################################
 # IMPORTS
 
-# THIRD-PARTY
-
-# from astropy.units import *
-
-from astropy.units.core import def_unit
 from astropy import units
+from astropy.units.core import def_unit
 from astropy.units.utils import generate_unit_summary as _generate_unit_summary
 
-
-# PROJECT-SPECIFIC
-
-from .amuse import *
-
+from .amuse import *  # noqa
 
 ##############################################################################
 # PARAMETERS

@@ -14,16 +14,10 @@ __author__ = "Nathaniel Starkman"
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
 
-
-# THIRD PARTY
-
-import numpy as np
 import numba
-
+import numpy as np
 
 ##############################################################################
 # PARAMETERS

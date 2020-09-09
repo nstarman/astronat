@@ -19,23 +19,16 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import abc
 import inspect
 import typing as T
-
 from collections import OrderedDict
 
-
-# THIRD PARTY
-
-from astropy.coordinates import BaseRepresentation, BaseDifferential
-from astropy.coordinates.distances import Distance
-from astropy.utils import classproperty
 import astropy.units as u
 import numpy as np
-
+from astropy.coordinates import BaseDifferential, BaseRepresentation
+from astropy.coordinates.distances import Distance
+from astropy.utils import classproperty
 
 ##############################################################################
 # PARAMETERS

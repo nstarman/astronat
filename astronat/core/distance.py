@@ -10,27 +10,15 @@ The units are natural units.
 
 """
 
-__author__ = "Nathaniel Starkman"
-
-
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
 import typing as T
 
-
-# THIRD PARTY
-
-import numpy as np
 import numba
-
-# PROJECT-SPECIFIC
-
+import numpy as np
 
 from ..constants import default_values as constants
-
 
 ##############################################################################
 # PARAMETERS
