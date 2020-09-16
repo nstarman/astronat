@@ -115,9 +115,9 @@ class TablesList(HomogeneousList):
 
     def _validate(self, value):
         """Validate `value` compatible with table."""
-        if isinstance(value, TablesList):  # tablelist or subclass
+        if isinstance(value, (TablesList, OrderedDict)):
             pass
-        elif not isinstance(value, OrderedDict):
+        else:
             try:
                 value = OrderedDict(value)
             except (TypeError, ValueError):
@@ -181,7 +181,8 @@ class TablesList(HomogeneousList):
 
     def items(self):
         """Generator providing iterator over name, table."""
-        return cabc.ItemsView(zip(self.keys(), self.values()))
+        for key, value in zip(self.keys(), self.values()):
+            yield key, value
 
     # /def
 
@@ -250,19 +251,28 @@ class TablesList(HomogeneousList):
         # first try if exists
         if key in self._dict:
             ind = self._dict[key]
-            return super().__setitem__(ind, value)  # (super _assert)
+            super().__setitem__(ind, value)  # (super _assert)
 
         # else append to end
         else:
             ind = len(self)
             self._dict[key] = ind
-            return super().append(value)  # (super _assert)
+            super().append(value)  # (super _assert)
 
     # /def
 
-    def __delitem__(self, key):
+    def __delitem__(self, key: T.Union[str, int]):  # TODO test!
         """Delete Item. Forbidden."""
-        raise NotImplementedError("Forbidden.")
+        if isinstance(key, str):
+            i = self.index(key)
+        elif isinstance(key, int):
+            i = key
+            key = [k for k, v in self.items() if v == i][0]  # get key
+        else:
+            raise TypeError
+
+        super().__delitem__(i)
+        self._dict.pop(key)
 
     # /def
 

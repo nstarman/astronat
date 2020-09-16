@@ -22,9 +22,14 @@ from utilipy.utils.typing import TableType
 # CODE
 ##############################################################################
 
+# TODO change to inplace=False as default
+
 
 def rename_columns(
-    table: TableType, rename: T.Dict[str, str], warn_mismatch: bool = True
+    table: TableType,
+    rename: T.Dict[str, str],
+    warn_mismatch: bool = True,
+    inplace: bool = True,
 ) -> TableType:
     """Rename columns in Table.
 
@@ -44,6 +49,8 @@ def rename_columns(
 
     """
     renamed = rename.copy()  # copy of rename dict, for putting in meta.
+    if not inplace:
+        table = table.__class__(table, copy=True)
 
     # iterate through dictionary, renaming columns
     name: str
@@ -78,6 +85,8 @@ def rename_columns(
 
 
 # ------------------------------------------------------------------------
+# TODO change name to "recast_columns"
+# TODO change to inplace=False as default
 
 
 def cast_columns(
@@ -85,6 +94,7 @@ def cast_columns(
     recast: T.Dict[str, T.Union[T.Any, T.Tuple[T.Any, bool]]],
     warn_mismatch: bool = True,
     elementwise: bool = False,
+    inplace: bool = True,
 ) -> TableType:
     """Cast Table column types.
 
@@ -104,6 +114,8 @@ def cast_columns(
 
     """
     recast = recast.copy()  # copy of rename dict, for putting in meta.
+    if not inplace:
+        table = table.__class__(table, copy=True)
 
     # iterate through dictionary, renaming columns
     names: T.Tuple[str] = tuple(recast.keys())
