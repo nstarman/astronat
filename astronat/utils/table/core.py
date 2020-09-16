@@ -10,8 +10,6 @@
     - change reader and writer to astropy asdf
     which can serialize a series of tables.
 
-    - Inherit from ReferenceClass to get automatic meta and __reference__
-
     - have an export to astropy NDData class
     need to understand uncertainties type. metadata?, NDDataArray
 
@@ -27,59 +25,46 @@ __all__ = [
 ##############################################################################
 # IMPORTS
 
-# BUILT-IN
-
-import json
+import collections.abc as cabc
 import pathlib
 import typing as T
 import warnings
-
 from collections import OrderedDict
 
-
-# THIRD PARTY
-
-from astropy.table import Table, QTable
+import asdf
+from astropy.table import QTable, Table
+from astropy.utils.collections import HomogeneousList
 from astropy.utils.introspection import resolve_name
-from astropy.io.misc import fnpickle, fnunpickle
-
+from astropy.utils.metadata import MetaData
 from astroquery.exceptions import InputWarning
-
-from utilipy.utils.collections import ReferenceBase
-
-
-##############################################################################
-# PARAMETERS
-
-
-def _type_pass_thru(x):
-    return x
-
-
-# TODO only necessary because `typing` doesn't have OrderedDict for py3.6
-OrderedDictType = T.TypeVar(
-    "OrderedDictType", OrderedDict, T.Sequence[T.Tuple[str, T.Any]]
-)
-
+from utilipy.utils.typing import OrderedDictType
 
 ##############################################################################
 # CODE
 ##############################################################################
 
 
-class TableList(OrderedDict, ReferenceBase):
-    """docstring for TableList."""
+class TablesList(HomogeneousList):
+    """Grouped Tables.
 
-    _types = Table
-    # meta = MetaData()  # in ReferenceBase
+    A subclass of list that contains only elements of a given type or
+    types.  If an item that is not of the specified type is added to
+    the list, a `TypeError` is raised. Also includes some pretty printing
+    methods for an OrderedDict of :class:`~astropy.table.Table` objects.
+
+    """
+
+    _types = None
+
+    meta = MetaData(copy=False)
 
     def __init__(
         self,
         inp: OrderedDictType = [],
         *,
         name: T.Optional[str] = None,
-        reference=None,
-        **kwargs,
+        reference: T.Optional[T.Any] = None,
+        **metadata,
     ):
         """Astroquery-style table list.
 
@@ -91,54 +76,48 @@ class TableList(OrderedDict, ReferenceBase):
             name of the list of tables.
         reference : citation, optional
             citation.
-        **kwargs : Any
+        **metadata : Any
             arguments into meta
 
         """
         # meta
         self.meta["name"] = name
         self.meta["reference"] = reference
-        for k, v in kwargs.items():
+        for k, v in metadata.items():
             self.meta[k] = v
 
-        super().__init__()
         inp = self._validate(inp)  # ODict, & ensure can assign values
 
-        # convert input to correct to type
-        if self._types is None:
-            converter = _type_pass_thru
-        elif not callable(self._types):
-            converter = self._types[0]
-        else:
-            converter = self._types
-        for k, val in inp.items():
-            inp[k] = converter(val)
+        # Convert input to correct to type
+        # If None, can be anything
+        if self._types is not None:
+            for k, val in inp.items():
+                inp[k] = self._types(val)  # TODO handle multiple "_types"
 
-        # finally add the input.
-        self.update(inp)
+        # finally add the input
+        # _dict store the indices for the keys
+        self._dict = {k: i for i, k in enumerate(inp.keys())}
 
-        return
+        # need to bypass HomogeneousList init, which uses ``extend``
+        list.__init__(self, inp.values())
 
     # /def
 
     # -----------------
 
-    def _assert(self, x, name=None):
-        """Check `x` is correct type (set by _types)."""
+    def _assert(self, x):
+        """Check `x` is correct type (set by _type)."""
         if self._types is None:  # allow any type
-            pass
-        elif not isinstance(x, self._types):  # catch wrong types
-            raise TypeError(
-                "Object {} not of type '{}'".format(name or "", self._types)
-            )
+            return
+        super()._assert(x)
 
     # /def
 
     def _validate(self, value):
-        """Validate `value` compatible with table and assert correct type."""
-        if isinstance(value, TablesList):  # tablelist or subclass
+        """Validate `value` compatible with table."""
+        if isinstance(value, (TablesList, OrderedDict)):
             pass
-        elif not isinstance(value, OrderedDict):
+        else:
             try:
                 value = OrderedDict(value)
             except (TypeError, ValueError):
@@ -146,10 +125,6 @@ class TableList(OrderedDict, ReferenceBase):
                     "Input to TableList must be an OrderedDict "
                     "or list of (k,v) pairs"
                 )
-
-        # for key, val in value.items():
-        #     print(type(val))
-        #     self._assert(val, name=key)
 
         return value
 
@@ -159,16 +134,62 @@ class TableList(OrderedDict, ReferenceBase):
     # Properties
 
     @property
-    def name(self):
+    def name(self) -> str:
         """Name."""
         return self.meta["name"]
+
+    # /def
+
+    @property
+    def __reference__(self):
+        """Get reference from metadata, if exists."""
+        return self.meta.get("reference", None)
+
+    # /def
+
+    # -----------------
+    # Dictionary methods
+
+    def keys(self):
+        """Set-like object giving table names."""
+        return self._dict.keys()
+
+    # /def
+
+    def sortedkeys(self):
+        """Set-like object giving table names.
+
+        Ordered by value. Does not update with table.
+
+        """
+        sorted_dict = dict(
+            sorted(self._dict.items(), key=lambda item: item[0])
+        )
+        return cabc.KeysView(sorted_dict.keys())
+
+    # /def
+
+    def values(self):
+        """Tuple object providing a view on tables.
+
+        Note that the tables can be edited
+
+        """
+        return tuple(self)
+
+    # /def
+
+    def items(self):
+        """Generator providing iterator over name, table."""
+        for key, value in zip(self.keys(), self.values()):
+            yield key, value
 
     # /def
 
     # -----------------
     # Get / Set
 
-    def index(self, key: str):
+    def index(self, key: str) -> int:
         """Index of `key`.
 
         Parameters
@@ -180,55 +201,11 @@ class TableList(OrderedDict, ReferenceBase):
         int
 
         """
-        return list(self.keys()).index(key)
+        return self._dict[key]
 
     # /def
 
-    def __getslice__(self, slicer):
-        """Slice dictionary.
-
-        slice(star, stop, step)
-        supports string as slice start or stop
-
-        Examples
-        --------
-        First creating slices
-            >>> vizier = Table([[1], [2]], names=["a", "b"])
-            >>> simbad = Table([[3], [5]], names=["d", "e"])
-            >>> od = TableList([("vizier", vizier), ("simbad", simbad)],
-            ...                name="test")
-
-        Example of standard slicing
-
-            >>> od[1:]  # doctest: +SKIP
-            Table([[3], [5]], names=["d", "e"])
-
-        Now slicing with string
-
-            >>> od["vizier":]  # doctest: +SKIP
-            Table([[3], [5]], names=["d", "e"])
-
-
-        """
-        # check if slice, if it is, then check for string inputs
-        # it it isn't a slice, then still try to apply to list of values
-        if isinstance(slicer, slice):
-            keys = list(self.keys())  # list of keys
-
-            start, stop = slicer.start, slicer.stop
-            # string replacement for start, stop values
-            # replace by int
-            if isinstance(start, str):
-                start = keys.index(start)
-            if isinstance(stop, str):
-                stop = keys.index(stop)
-            slicer = slice(start, stop, slicer.step)
-
-        return list(self.values())[slicer]
-
-    # /def
-
-    def __getitem__(self, key):
+    def __getitem__(self, key: T.Union[int, slice, str]):
         """Get item or slice.
 
         Parameters
@@ -250,45 +227,99 @@ class TableList(OrderedDict, ReferenceBase):
 
         """
         if isinstance(key, int):
-            return super().__getitem__(tuple(self.keys())[key])
-        elif isinstance(key, slice):
-            return self.__getslice__(key)
-        else:
             return super().__getitem__(key)
+        elif isinstance(key, slice):
+            start, stop = key.start, key.stop
+            # string replacement for start, stop values
+            # replace by int
+            if isinstance(start, str):
+                start = self.index(start)
+            if isinstance(stop, str):
+                stop = self.index(stop)
+            key = slice(start, stop, key.step)
+            return super().__getitem__(key)
+        else:
+            return super().__getitem__(self.index(key))
 
     # /def
 
-    def __setitem__(self, key, value):
-        """Set item, but only if right type."""
-        # self._assert(value)
-        super().__setitem__(key, value)
+    def __setitem__(self, key: str, value):
+        """Set item, but only if right type (managed by super)."""
+        if not isinstance(key, str):
+            raise TypeError
+
+        # first try if exists
+        if key in self._dict:
+            ind = self._dict[key]
+            super().__setitem__(ind, value)  # (super _assert)
+
+        # else append to end
+        else:
+            ind = len(self)
+            self._dict[key] = ind
+            super().append(value)  # (super _assert)
+
+    # /def
+
+    def __delitem__(self, key: T.Union[str, int]):  # TODO test!
+        """Delete Item. Forbidden."""
+        if isinstance(key, str):
+            i = self.index(key)
+        elif isinstance(key, int):
+            i = key
+            key = [k for k, v in self.items() if v == i][0]  # get key
+        else:
+            raise TypeError
+
+        super().__delitem__(i)
+        self._dict.pop(key)
 
     # /def
 
     def update(self, other):
         """Update TableList using OrderedDict update method."""
         values = self._validate(other)  # first make sure adding a key-val pair
-        # print(values)
-        OrderedDict.update(self, values)  # TODO use super
+        for k, v in values.items():  # TODO better
+            self[k] = v  # setitem manages _dict
 
     # /def
 
     def extend(self, other):
-        """Extend TableList."""
-        self.update(other)
+        """Extend TableList. Unlike update, cannot have duplicate keys."""
+        values = self._validate(other)  # first make sure adding a key-val pair
+
+        if any((k in self.keys() for k in values.keys())):
+            raise ValueError("cannot have duplicate keys")
+
+        self.update(values)
 
     # /def
 
     def __iadd__(self, other):
         """Add in-place."""
-        self.extend(other)
-        return self
+        return super().__iadd__(other)
 
     # /def
 
-    def append(self, other):
-        """Forbidden to append."""
-        raise Exception("Forbidden to append.")
+    def append(self, key: str, value):
+        """Append, if unique key and right type (managed by super)."""
+        if key in self._dict:
+            raise ValueError("cannot append duplicate key.")
+
+        self._dict[key] = len(self)
+        return super().append(value)
+
+    # /def
+
+    def pop(self):
+        """Pop. Forbidden."""
+        raise NotImplementedError("Forbidden.")
+
+    # /def
+
+    def insert(self, value):
+        """Insert. Forbidden."""
+        raise NotImplementedError("Forbidden.")
 
     # /def
 
@@ -310,7 +341,7 @@ class TableList(OrderedDict, ReferenceBase):
 
     # /def
 
-    def format_table_list(self):
+    def format_table_list(self) -> str:
         """String Representation of list of Tables.
 
         Prints the names of all :class:`~astropy.table.Table` objects, with
@@ -324,9 +355,11 @@ class TableList(OrderedDict, ReferenceBase):
         """
         ntables = len(list(self.keys()))
         if ntables == 0:
-            return "Empty TableList"
+            return "Empty {cls}".format(cls=self.__class__.__name__)
 
-        header_str = "TableList with {keylen} tables:".format(keylen=ntables)
+        header_str = "{cls} with {keylen} tables:".format(
+            cls=self.__class__.__name__, keylen=ntables
+        )
         body_str = "\n".join(
             [
                 "\t'{t_number}:{t_name}' with {ncol} column(s) "
@@ -339,6 +372,7 @@ class TableList(OrderedDict, ReferenceBase):
                 for t_number, t_name in enumerate(self.keys())
             ]
         )
+
         return "\n".join([header_str, body_str])
 
     # /def
@@ -346,7 +380,7 @@ class TableList(OrderedDict, ReferenceBase):
     def print_table_list(self):
         """Print Table List.
 
-        calls format_table_list
+        calls ``format_table_list``
 
         """
         print(self.format_table_list())
@@ -354,11 +388,18 @@ class TableList(OrderedDict, ReferenceBase):
     # /def
 
     def pprint(self, **kwargs):
-        """Helper function to make API more similar to astropy.Tables."""
+        """Helper function to make API more similar to astropy.Tables.
+
+        .. todo::
+
+            uses "kwargs"
+
+        """
         if kwargs != {}:
             warnings.warn(
                 "TableList is a container of astropy.Tables.", InputWarning
             )
+
         self.print_table_list()
 
     # /def
@@ -366,13 +407,232 @@ class TableList(OrderedDict, ReferenceBase):
     # -----------------
     # I/O
 
-    def _renamedkeycopy(self, name=None):
-        """Shallow copy with keys renamed."""
-        if name is None:
-            name = self.name
-        out = self.__class__(((name + "_" + k, v) for k, v in self.items()))
-        out.meta = self.meta
-        return out
+    def _save_table_iter(self, format, **table_kw):
+        for i, name in enumerate(self.keys()):  # order-preserving
+
+            # get kwargs for table writer
+            # first get all general keys (by filtering)
+            # then update with table-specific dictionary (if present)
+            kw = {
+                k: v for k, v in table_kw.items() if not k.startswith("table_")
+            }
+            kw.update(table_kw.get("table_" + name, {}))
+
+            if isinstance(format, str):
+                fmt = format
+            else:
+                fmt = format[i]
+
+            yield name, fmt, kw
+
+    # /def
+
+    def write(
+        self,
+        drct: str,
+        format="asdf",
+        split=True,
+        serialize_method=None,
+        **table_kw,
+    ):
+        """Write to ASDF.
+
+        Parameters
+        ----------
+        drct : str
+            The main directory path.
+        format : str or list, optional
+            save format. default "asdf"
+            can be list of same length as TableList
+        split : bool, optional
+            *Applies to asdf `format` only*
+
+            Whether to save the tables as individual file
+            with `file` coordinating by reference.
+
+        serialize_method : str, dict, optional
+            Serialization method specifier for columns.
+
+        **table_kw
+            kwargs into each table.
+            1. dictionary with table name as key
+            2. General keys
+
+        """
+
+        # -----------
+        # Path checks
+
+        path = pathlib.Path(drct)
+
+        if path.suffix == "":  # no suffix
+            path = path.with_suffix(".asdf")
+
+        if path.suffix != ".asdf":  # ensure only asdf
+            raise ValueError("file type must be `.asdf`.")
+
+        drct = path.parent  # directory in which to save
+
+        # -----------
+        # TableType
+
+        if self._types is None:
+            table_type = [
+                tp.__class__.__module__ + "." + tp.__class__.__name__
+                for tp in self.values()
+            ]
+        else:
+            table_type = self._types.__module__ + "." + self._types.__name__
+
+        # -----------
+        # Saving
+
+        TL = asdf.AsdfFile()
+        TL.tree["meta"] = tuple(self.meta.items())
+        TL.tree["table_names"] = tuple(self.keys())  # in order
+        TL.tree["save_format"] = format
+        TL.tree["table_type"] = table_type
+
+        if format == "asdf" and not split:  # save as single file
+            for name in self.keys():  # add to tree
+                TL.tree[name] = self[name]
+
+        else:  # save as individual files
+            for name, fmt, kw in self._save_table_iter(format, **table_kw):
+
+                # name of table
+                table_path = drct.joinpath(name)
+                if table_path.suffix == "":  # TODO currently always. CLEANUP
+                    table_path = table_path.with_suffix(
+                        "." + fmt.split(".")[-1]
+                    )
+
+                # internal save
+                if format == "asdf":
+                    kw["data_key"] = kw.get("data_key", name)
+                self[name].write(
+                    table_path,
+                    format=fmt,
+                    serialize_method=serialize_method,
+                    **kw,
+                )
+
+                # save by relative reference
+                if format == "asdf":
+                    with asdf.open(table_path) as f:
+                        TL.tree[name] = f.make_reference(path=[name])
+                else:
+                    TL.tree[name] = str(table_path.relative_to(drct))
+
+        # Need to add a "data" key to not break asdf
+        if not format == "asdf":
+            TL.tree["data"] = TL.tree["table_names"]
+
+        # /if
+        TL.write_to(str(path))  # save directory
+
+    # /def
+
+    @classmethod
+    def _read_table_iter(cls, f, format, **table_kw):
+        names = f.tree["table_names"]
+        # table type, for casting
+        # so that QTableList can open a saved TableList correctly
+        # TablesList specifies no type, so must rely on saved info
+        if cls._types is None:
+            table_type = f.tree["table_type"]
+            if not isinstance(table_type, cabc.Sequence):
+                table_type = [table_type] * len(names)
+            ttypes = [resolve_name(t) for t in table_type]
+        else:
+            ttypes = [cls._types] * len(names)
+
+        for i, name in enumerate(names):  # order-preserving
+
+            if isinstance(format, str):
+                fmt = format
+            else:
+                fmt = format[i]
+
+            # get kwargs for table writer
+            # first get all general keys (by filtering)
+            # then update with table-specific dictionary (if present)
+            kw = {
+                k: v for k, v in table_kw.items() if not k.startswith("table_")
+            }
+            kw.update(table_kw.get("table_" + name, {}))
+
+            yield name, ttypes[i], fmt, kw
+
+    # /def
+
+    @classmethod
+    def read(
+        cls,
+        drct: str,
+        format: T.Union[str, T.Sequence] = None,
+        suffix: T.Optional[str] = None,
+        **table_kw,
+    ):
+        """Write to ASDF.
+
+        Parameters
+        ----------
+        drct : str
+            The main directory path.
+        format : str or list, optional
+            read format. default "asdf"
+            can be list of same length as TableList
+        suffix : str, optional
+            suffix to apply to table names.
+            will be superceded by an "fnames" argument, when added
+
+        **table_kw
+            kwargs into each table.
+            1. dictionary with table name as key
+            2. General keys
+
+        """
+        # -----------
+        # Path checks
+
+        path = pathlib.Path(drct)
+
+        if path.suffix == "":  # no suffix
+            path = path.with_suffix(".asdf")
+
+        if path.suffix != ".asdf":  # ensure only asdf
+            raise ValueError("file type must be `.asdf`.")
+
+        drct = path.parent  # directory
+
+        # -----------
+        # Read
+
+        TL = cls()
+        with asdf.open(path) as f:
+            f.resolve_references()
+
+            # load in the metadata
+            TL.meta = OrderedDict(f.tree["meta"])
+
+            if format is None:
+                format = f.tree["save_format"]
+
+            # iterate through tables
+            for name, ttype, fmt, kw in cls._read_table_iter(
+                f, format, **table_kw
+            ):
+                tl = f.tree[name]
+
+                # TODO what if tuple of str as path to name?
+                if not isinstance(tl, str):  # only for asdf
+                    TL[name] = ttype(f.tree[name], **kw)  # TODO need kw?
+                else:
+                    table_path = drct.joinpath(tl)  # .with_suffix(suffix)
+                    TL[name] = ttype.read(str(table_path), format=fmt, **kw)
+
+        return TL
 
     # /def
 
@@ -380,212 +640,21 @@ class TableList(OrderedDict, ReferenceBase):
         """Shallow copy."""
         out = self.__class__(self)
         out.meta = self.meta
+
         return out
 
     # /def
 
-    def write(self, drct: str, *args, **kwargs):
-        """Write TableList.
 
-        .. todo::
-            write table meta better than pickle
-            correct bad characters is figured out names
+# /class
 
-        Parameters
-        ----------
-        drct : str
-            the output directory.
-        *args : tuple, optional
-            Positional arguments passed through to data writer.
-            If supplied the first argument is the output filename.
+# -------------------------------------------------------------------
 
-                - None will make own file names, trying `tables` in meta
-                - List must match TableList length and order
-        format : str
-            File format specifier.
-        serialize_method : str, dict, optional
-            Serialization method specifier for columns.
 
-        """
-        # arguments are into each table. normally they accept the filename
-        # as the first argument. now the first argument can be a list of
-        # filenames. The rest of the arguments are passed to each table.
-        # if no arguments are given, then "fnames" in metadata is used to
-        # try and figure out the names. If that doesn't exist it will name
-        # the tables by index.
-        if not args:  # args are not None, need to get name list.
-            if "fnames" in self.meta.keys():
-                fnames = self.meta["fnames"]  # name list
-                subargs = list(args[1:])  # rest of args
+class TableList(TablesList):
+    """Homogeneous TablesList."""
 
-            else:  # need to figure out names
-                raise ValueError("TODO, figure out names")
-                # fnames = self.keys()  # TODO correct bad characters
-                # subargs = ()
-        else:
-            fnames = self.meta["fnames"]
-            subargs = ()
-        # /if
-
-        # Step 0: information
-        tli = {
-            "name": self.name,
-            "format": kwargs.get("format", None),
-            "tables": [(k, v) for k, v in zip(self.keys(), fnames)],
-            "meta": "meta.pkl",
-        }
-        # table_type
-        if not callable(self._types):  # it's a list, choose the first
-            table_type = self._types[0]
-        else:
-            table_type = self._types
-        table_type = (table_type.__module__ + "." + table_type.__name__,)
-        tli["table_type"] = table_type
-
-        # Step 1: directory
-        # make or determine if should overwrite
-        drct = pathlib.Path(drct)
-        try:
-            drct.mkdir(parents=True)
-
-        except FileExistsError:  # directory exists
-            # now need to determine whether to allow overwriting
-            if not kwargs.get("overwrite", False):
-                raise FileExistsError(f"director {drct} already exists.")
-
-        # Step 2: Save JSON TableList descriptor
-        with open(
-            drct.joinpath("tablelist.json"), "w", encoding="utf-8"
-        ) as file:
-            json.dump(tli, file, ensure_ascii=False, indent=4)
-
-        # Step 3: write meta
-        with open(drct.joinpath(tli["meta"]), "wb") as file:
-            fnpickle(self.meta, file)
-
-        # Step 4: write individual tables
-        # print(tli["tables"])
-        for key, fname in tli["tables"]:
-            self[key].write(drct.joinpath(fname), *subargs, **kwargs)
-        # /for
-
-        return
-
-    # /def
-
-    @staticmethod
-    def validate_tablelist_json(tli: T.Union[str, dict]):
-        """Checks if JSON is a valid tablelistinfo."""
-        if isinstance(tli, str):  # open if file path
-            with open(tli, "r") as file:
-                tli = json.load(file)
-
-        keys = tli.keys()
-
-        # first check has valid keys
-        if not all(
-            [k in keys for k in ("name", "format", "tables", "table_type")]
-        ):
-            raise ValueError("does not have write keys")
-        # now check values are legit
-        if not isinstance(tli["name"], str):
-            raise TypeError("name is not a str")
-        if not isinstance(tli["format"], (str, type(None))):
-            raise TypeError("format is not str or None")
-        if not isinstance(tli["tables"], (list, tuple)):
-            raise TypeError("tables must be list or tuple")
-
-        for t in tli["tables"]:
-            if not isinstance(t[0], str) or not isinstance(t[1], str):
-                raise TypeError("table element must be strings")
-
-        if not isinstance(tli["table_type"], (str, list, tuple)):
-            raise TypeError("table_type must be str, list, or tuple")
-
-    # /def
-
-    @classmethod
-    def read(cls, tli, *args, **kwargs):
-        """Read and parse a data directory and return as a TableList.
-
-        .. todo::
-
-            support providing in all the info contained in tablist json
-
-        Parameters
-        ----------
-        tli : str or dict
-            the tablelist info
-                - name
-                - format: table format
-                - tables: (key, save location) tuples
-                - meta: metadata pickle location
-        format : str
-            File format specifier.
-        *args : tuple, optional
-            Positional arguments passed through to data reader
-            Do NOT include input filename.
-        **kwargs : dict, optional
-            Keyword arguments passed through to data reader.
-
-        Returns
-        -------
-        TableList
-            with name, meta, and contents set by `tli` info
-
-        """
-        # --------------
-        # loader (it's a json file)
-
-        if isinstance(tli, str):  # open if file path
-            # get directory from file name
-            drct = pathlib.Path(tli).resolve()
-            if not drct.is_dir():
-                drct = drct.parent
-            # json loader
-            with open(tli, "r") as file:
-                tli = json.load(file)
-        else:
-            drct = pathlib.Path(".")  # paths relative
-
-        cls.validate_tablelist_json(tli)
-
-        # --------
-        # construct tablelist
-
-        tablelist = OrderedDict()
-
-        # read tables
-        # pop format, with tli value as default
-        fmt = kwargs.pop("format", tli.get("format", None))
-
-        if cls._types is not None:
-            table_type = [cls._types] * len(tli["tables"])
-        else:
-            tt = kwargs.pop("table_type", tli.get("table_type", "Table"))
-            if isinstance(tt, str):
-                _types = resolve_name(tt)
-                table_type = [_types] * len(tli["tables"])
-            else:
-                if not len(tt) == len(tli["tables"]):
-                    raise ValueError
-
-        for reader, (key, fname) in zip(table_type, tli["tables"]):
-            tablelist[key] = reader.read(
-                drct.joinpath(fname), *args, format=fmt, **kwargs
-            )
-
-        # read metadata
-        with open(drct.joinpath(tli["meta"]), "rb") as file:
-            meta = fnunpickle(file)
-
-        # make TableList
-        TL = cls(tablelist)
-        TL.meta = meta
-
-        return TL
-
-    # /def
+    _types = Table
 
 
 # /class
@@ -594,37 +663,16 @@ class TableList(OrderedDict, ReferenceBase):
 # -------------------------------------------------------------------
 
 
-class QTableList(TableList):
+class QTableList(TablesList):
     """Astroquery-style QTable list.
 
     Attributes
     ----------
     meta : :class:`~astropy.utils.metadata.MetaData`
-    _types : ClassType
-        the element type
-    _dict : dictionary
-        where the keys are stored.
 
     """
 
     _types = QTable
-
-
-# /class
-
-
-# -------------------------------------------------------------------
-
-
-class TablesList(TableList):
-    """Non-homogeneous TableList."""
-
-    _types = None
-
-    # def _assert(self, x):  # allow any type to be added
-    #     return True
-
-    # /def
 
 
 # /class
